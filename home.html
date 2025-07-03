@@ -1,0 +1,1076 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Beranda - KlikKost</title>
+    <style>
+        :root {
+            --primary-brand-color: #3c312b;
+            --secondary-brand-color: #ff567d;
+            --background-color: #f0f2f5;
+            --card-bg-color: #ffffff;
+            --text-dark: #1a2b49;
+            --text-light: #6b7388;
+            --border-color: #e6e8ee;
+            --font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+            --success-color: #28a745;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+            --chat-bubble-sent: #e7f0ff;
+            --chat-bubble-received: #f1f1f1;
+        }
+        
+        body.dark-mode {
+            --background-color: #121212;
+            --card-bg-color: #1e1e1e;
+            --text-dark: #e0e0e0;
+            --text-light: #888;
+            --border-color: #333;
+            --chat-bubble-sent: #2a3950;
+            --chat-bubble-received: #333;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: var(--font-family); background-color: var(--background-color); color: var(--text-dark); transition: background-color 0.3s, color 0.3s; }
+        main { display: block; }
+        .hidden { display: none !important; }
+        .page-container { padding-bottom: 90px; }
+
+        .page-header { display: flex; align-items: center; gap: 10px; padding: 15px; background-color: var(--card-bg-color); box-shadow: 0 2px 4px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 10; }
+        .back-button { background: none; border: none; font-size: 1.5rem; cursor: pointer; padding-right: 10px; color: var(--text-dark); }
+        .page-title { font-size: 1.2rem; font-weight: 600; white-space: nowrap; flex-grow: 1; }
+        
+        /* Form Umum & Konten Statis */
+        .static-content, .form-section { padding: 20px; }
+        .static-content h4 { font-size: 1.1rem; margin-top: 15px; margin-bottom: 10px; }
+        .static-content p, .static-content li { color: var(--text-light); line-height: 1.6; margin-bottom: 15px; }
+        .static-content ul { padding-left: 20px; }
+        .faq-item { margin-bottom: 20px; }
+        .faq-question { font-weight: 600; }
+        .faq-answer { color: var(--text-light); margin-top: 8px; }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; font-size: 0.9rem; color: var(--text-light); margin-bottom: 8px; }
+        .form-group input { width: 100%; padding: 12px 15px; border-radius: 8px; border: 1px solid var(--border-color); background-color: var(--card-bg-color); color: var(--text-dark); font-size: 1rem; }
+        .form-button { width: 100%; background-color: var(--secondary-brand-color); color: #fff; border: none; padding: 15px; border-radius: 10px; font-size: 1.1rem; font-weight: 700; cursor: pointer; margin-top: 20px; }
+
+        /* Modal Umum (Destinasi & Kalender) */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.6); z-index: 200; display: flex; justify-content: center; align-items: center; padding: 20px;}
+        .modal-content { background-color: var(--card-bg-color); padding: 20px; border-radius: 16px; width: 100%; max-width: 400px; max-height: 90vh; display: flex; flex-direction: column; }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 15px; margin-bottom: 15px; }
+        .modal-title { font-size: 1.2rem; font-weight: 700; }
+        .modal-close-btn { background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--text-light); }
+        .destinasi-list { list-style: none; overflow-y: auto; }
+        .destinasi-item { padding: 15px 10px; border-bottom: 1px solid var(--border-color); cursor: pointer; }
+        .destinasi-item:hover { background-color: var(--background-color); }
+        
+        /* Kalender */
+        .calendar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .calendar-header button { background: none; border: 1px solid var(--border-color); border-radius: 50%; width: 36px; height: 36px; cursor: pointer; font-size: 1.2rem; color: var(--text-dark); }
+        #month-year { font-weight: 600; font-size: 1.1rem; }
+        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; }
+        .calendar-cell { text-align: center; padding: 10px 5px; }
+        .calendar-cell.weekday { font-weight: 600; color: var(--text-light); font-size: 0.8rem; }
+        .calendar-cell.date-cell { cursor: pointer; border-radius: 50%; }
+        .calendar-cell.date-cell:hover { background-color: var(--background-color); }
+        .calendar-cell.today { font-weight: bold; border: 1px solid var(--secondary-brand-color); }
+        .calendar-cell.selected { background-color: var(--secondary-brand-color); color: white; font-weight: bold; }
+        .calendar-cell.empty { cursor: default; }
+        .calendar-cell.empty:hover { background-color: transparent; }
+        
+        /* Halaman Nota Transaksi (Tampilan Baru) */
+        .nota-wrapper { background-color: var(--card-bg-color); margin: 20px; padding: 25px; border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+        .nota-main-header { text-align: center; margin-bottom: 25px; }
+        .nota-main-header img { width: 60px; height: 60px; margin-bottom: 10px; }
+        .nota-main-header h3 { font-size: 1.4rem; color: var(--success-color); font-weight: 700; margin-bottom: 4px; }
+        .nota-main-header p { font-size: 0.9rem; color: var(--text-light); }
+        .nota-section { border-top: 1px dashed var(--border-color); padding-top: 20px; margin-top: 20px; }
+        .nota-section-title { font-size: 1rem; font-weight: 600; margin-bottom: 15px; }
+        .nota-details .detail-item { display: flex; justify-content: space-between; margin-bottom: 15px; font-size: 0.95rem; }
+        .nota-details .detail-item span { color: var(--text-light); }
+        .nota-details .detail-item strong { text-align: right; }
+        .nota-actions { padding: 20px; }
+
+        /* CSS Lainnya (Home, Detail, Profil, dll.) */
+        /* Kode CSS lainnya dari respons sebelumnya tetap ada di sini untuk kelengkapan */
+        .hero-header { background: linear-gradient(to right, #3c312b, #3c312b); color: #fff; padding: 20px; padding-bottom: 80px; border-radius: 0 0 24px 24px; }
+        .top-bar { display: flex; justify-content: space-between; align-items: center; position: relative; }
+        .logo { font-size: 1.5rem; font-weight: 700; }
+        .notification-icon { width: 28px; height: 28px; cursor: pointer; }
+        #notification-panel { position: absolute; top: 40px; right: 0; width: 300px; background-color: var(--card-bg-color); border-radius: 12px; box-shadow: 0 5px 25px rgba(0,0,0,0.15); z-index: 210; border: 1px solid var(--border-color); }
+        .notification-header { padding: 15px; font-weight: 600; border-bottom: 1px solid var(--border-color); color: var(--text-dark); }
+        .notification-list { list-style: none; max-height: 300px; overflow-y: auto; }
+        .notification-item { padding: 15px; border-bottom: 1px solid var(--border-color); font-size: 0.9rem; }
+        .notification-item p { color: var(--text-light); font-size: 0.8rem; margin-top: 4px; }
+        .search-panel { background-color: var(--card-bg-color); border-radius: 16px; box-shadow: 0 8px 20px rgba(0,0,0,0.1); padding: 20px; margin: -60px 20px 20px 20px; position: relative; z-index: 10; }
+        .search-field { display: flex; align-items: center; gap: 10px; padding: 12px 0; border-bottom: 1px solid var(--border-color); }
+        .search-field.interactive { cursor: pointer; }
+        .search-field-input label { font-size: 0.8rem; color: var(--text-light); }
+        .search-field-input span { font-size: 1rem; font-weight: 600; }
+        .search-button { width: 100%; background-color: #ff567d; color: #fff; border: none; padding: 15px; border-radius: 10px; font-size: 1.1rem; font-weight: 700; cursor: pointer; margin-top: 20px; }
+        .quick-menu { display: flex; justify-content: space-around; text-align: center; padding: 0 20px 20px 20px; }
+        .menu-item { cursor: pointer; }
+        .menu-item-icon { width: 50px; height: 50px; border-radius: 14px; display: flex; align-items: center; justify-content: center; margin: 0 auto 8px; background-color: #e7f0ff; }
+        body.dark-mode .menu-item-icon { background-color: #2a2a38; }
+        .menu-item-icon img { width: 28px; }
+        .menu-item span { font-size: 0.85rem; }
+        .ads-slider-wrapper { margin: 0 20px 20px 20px; position: relative; overflow: hidden; border-radius: 16px; }
+        .ads-slider-track { display: flex; transition: transform 0.7s ease-in-out; }
+        .ad-card { flex: 0 0 100%; padding: 20px; border-radius: 16px; display: flex; flex-direction: column; justify-content: center; min-height: 150px; }
+        .ad-card.promo-1 { background: linear-gradient(135deg, #3c312b 0%, #764ba2 100%); color: #fff; }
+        .ad-card.promo-2 { background: linear-gradient(135deg, #ff9a8b 0%, #ff6a88 100%); color: #fff; }
+        .ad-card.promo-3 { background: linear-gradient(135deg, #2af598 0%, #009efd 100%); color: #fff; }
+        .ad-title { font-size: 1.2rem; font-weight: 700; margin-bottom: 5px; }
+        .ad-content { font-size: 0.9rem; opacity: 0.9; margin-bottom: 15px; }
+        .ad-button { background-color: rgba(255, 255, 255, 0.9); color: var(--text-dark); border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-size: 0.85rem; font-weight: 600; align-self: flex-start; }
+        .content-section { padding: 0 20px; margin-bottom: 20px; }
+        .section-title { font-size: 1.3rem; font-weight: 700; margin-bottom: 15px; }
+        .kost-slider { display: flex; gap: 16px; overflow-x: auto; padding-bottom: 10px; margin: 0 -20px; padding-left: 20px; padding-right: 20px; scrollbar-width: none; }
+        .kost-slider::-webkit-scrollbar { display: none; }
+        .kost-card { cursor: pointer; flex: 0 0 280px; background-color: var(--card-bg-color); border-radius: 16px; border: 1px solid var(--border-color); overflow: hidden; }
+        .kost-card-image { width: 100%; height: 180px; object-fit: cover; }
+        .kost-card-content { padding: 15px; }
+        .kost-card-title { font-size: 1.1rem; }
+        .results-search-wrapper { position: relative; flex-grow: 1; }
+        #results-search-input { width: 100%; padding: 8px 15px 8px 35px; border-radius: 20px; border: 1px solid var(--border-color); font-size: 0.9rem; background-color: var(--background-color); color: var(--text-dark); }
+        .results-search-wrapper .icon { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--text-light); }
+        .results-list { padding: 20px; display: flex; flex-direction: column; gap: 15px; }
+        .result-card { cursor: pointer; display: flex; gap: 15px; background-color: var(--card-bg-color); padding: 15px; border-radius: 12px; border: 1px solid var(--border-color); }
+        .result-card img { width: 100px; height: 100px; border-radius: 8px; object-fit: cover; }
+        .detail-image { width: 100%; height: 250px; object-fit: cover; }
+        .detail-content, .booking-content { padding: 20px; }
+        .detail-title { font-size: 1.5rem; font-weight: 700; margin-bottom: 8px; }
+        .detail-address { color: var(--text-light); margin-bottom: 15px; }
+        .detail-section { margin-top: 25px; } .detail-section h3 { font-size: 1.2rem; font-weight: 600; border-bottom: 2px solid var(--border-color); padding-bottom: 10px; margin-bottom: 15px; }
+        .fasilitas-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+        .fasilitas-item { display: flex; align-items: center; gap: 10px; }
+        .map-container { width: 100%; height: 200px; border-radius: 12px; overflow: hidden; margin-top: 15px; }
+        .map-container iframe { width: 100%; height: 100%; border: 0; }
+        .booking-bar { position: fixed; bottom: 0; left: 0; width: 100%; background-color: var(--card-bg-color); padding: 15px 20px; box-shadow: 0 -2px 10px rgba(0,0,0,0.1); display: flex; justify-content: space-between; align-items: center; z-index: 15; }
+        .booking-price .price { font-size: 1.3rem; font-weight: 700; }
+        .booking-price .per-month { color: var(--text-light); }
+        .pesan-button { background-color: #ff567d; color: #fff; border: none; padding: 12px 25px; border-radius: 10px; font-size: 1rem; font-weight: 700; cursor: pointer; }
+        .payment-method { display: flex; justify-content: space-between; align-items: center; padding: 15px; border: 1px solid var(--border-color); border-radius: 10px; margin-bottom: 10px; cursor: pointer; background-color: var(--card-bg-color); }
+        .payment-method.selected { border-color: #5392f9; background-color: #e7f0ff; }
+        body.dark-mode .payment-method.selected { background-color: #2a2a38; }
+        .payment-method img { height: 25px; }
+        .pesanan-content { padding: 15px; }
+        .pesanan-card { background-color: var(--card-bg-color); border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); margin-bottom: 20px; border: 1px solid var(--border-color); }
+        .pesanan-card-header { display: flex; gap: 15px; padding: 15px; cursor: pointer; }
+        .pesanan-card-img { width: 90px; height: 90px; border-radius: 8px; object-fit: cover; }
+        .pesanan-card-info { flex-grow: 1; }
+        .pesanan-card-info h4 { font-size: 1.1rem; font-weight: 700; margin-bottom: 5px; }
+        .pesanan-card-info p { font-size: 0.9rem; color: var(--text-light); margin-bottom: 10px; }
+        .status-badge { padding: 5px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; color: #fff; display: inline-block; }
+        .status-badge.lunas { background-color: var(--success-color); }
+        .status-badge.menunggu { background-color: var(--warning-color); color: var(--text-dark); }
+        .pesanan-card-footer { background-color: #fafafa; border-top: 1px solid var(--border-color); padding: 10px 15px; display: flex; justify-content: flex-end; align-items: center; gap: 10px; border-radius: 0 0 12px 12px; }
+        body.dark-mode .pesanan-card-footer { background-color: #222; }
+        .delete-button { background: none; border: 1px solid var(--danger-color); color: var(--danger-color); padding: 6px 15px; border-radius: 8px; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: all 0.2s ease; }
+        .delete-button:hover { background-color: var(--danger-color); color: #fff; }
+        .pay-button { background-color: var(--secondary-brand-color); color: #fff; border: none; padding: 7px 18px; border-radius: 8px; font-size: 0.85rem; font-weight: 600; cursor: pointer; }
+        #no-pesanan, #no-inbox { text-align: center; color: var(--text-light); padding: 40px 20px; }
+        .inbox-list { padding: 15px; }
+        .chat-item { display: flex; align-items: center; gap: 15px; padding: 12px; background-color: var(--card-bg-color); border-radius: 12px; margin-bottom: 12px; cursor: pointer; transition: background-color 0.2s; position: relative; }
+        .chat-item:hover { background-color: #f8f9fa; }
+        body.dark-mode .chat-item:hover { background-color: #2a2a2a; }
+        .chat-avatar { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; }
+        .chat-content { flex-grow: 1; overflow: hidden; }
+        .chat-header { display: flex; justify-content: space-between; align-items: baseline; }
+        .chat-name { font-size: 1rem; font-weight: 600; }
+        .chat-timestamp { font-size: 0.75rem; color: var(--text-light); }
+        .chat-preview { font-size: 0.9rem; color: var(--text-light); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .chat-preview.unread { color: var(--text-dark); font-weight: 600; }
+        .unread-dot { width: 10px; height: 10px; background-color: var(--secondary-brand-color); border-radius: 50%; position: absolute; top: 12px; right: 12px; }
+        .chat-detail-header { display: flex; align-items: center; gap: 10px; flex-grow: 1; margin-left: -10px; }
+        .chat-detail-header img { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; }
+        .chat-detail-header span { font-size: 1.1rem; font-weight: 600; }
+        .chat-messages { padding: 20px; display: flex; flex-direction: column; gap: 15px; padding-bottom: 80px; }
+        .chat-bubble { max-width: 80%; padding: 10px 15px; border-radius: 18px; line-height: 1.5; }
+        .chat-bubble.sent { background-color: var(--chat-bubble-sent); align-self: flex-end; border-bottom-right-radius: 4px; color: #333; }
+        .chat-bubble.received { background-color: var(--chat-bubble-received); align-self: flex-start; border-bottom-left-radius: 4px; }
+        body.dark-mode .chat-bubble.sent { color: #e0e0e0; }
+        body.dark-mode .chat-bubble.received { color: #e0e0e0; }
+        .chat-input-bar { position: fixed; bottom: 0; left: 0; width: 100%; background-color: var(--card-bg-color); padding: 10px 15px; display: flex; gap: 10px; align-items: center; border-top: 1px solid var(--border-color); z-index: 20; }
+        #chat-input { flex-grow: 1; padding: 10px 15px; border-radius: 20px; border: 1px solid var(--border-color); background-color: var(--background-color); color: var(--text-dark); }
+        #send-chat-btn { background-color: var(--secondary-brand-color); color: #fff; border: none; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 1.2rem; flex-shrink: 0; }
+        .profile-header { text-align: center; padding: 30px 20px; }
+        .profile-avatar { width: 90px; height: 90px; border-radius: 50%; object-fit: cover; margin-bottom: 15px; border: 3px solid var(--card-bg-color); box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .profile-name { font-size: 1.4rem; font-weight: 700; margin-bottom: 5px; }
+        .profile-email { font-size: 1rem; color: var(--text-light); }
+        .profile-menu { margin: 0 20px; background-color: var(--card-bg-color); border-radius: 12px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        .profile-menu-item { display: flex; align-items: center; padding: 15px; gap: 15px; cursor: pointer; border-bottom: 1px solid var(--border-color); }
+        .profile-menu-item:last-child { border-bottom: none; }
+        .profile-menu-item .icon { width: 24px; height: 24px; color: var(--text-light); flex-shrink: 0; }
+        .profile-menu-item span { flex-grow: 1; font-weight: 500; }
+        .profile-actions { padding: 25px 20px; display: flex; flex-direction: column; gap: 15px; }
+        .logout-button, .switch-account-button { width: 100%; border: none; padding: 15px; border-radius: 10px; font-size: 1rem; font-weight: 700; cursor: pointer; }
+        .logout-button { background-color: #ffeef0; color: var(--danger-color); }
+        body.dark-mode .logout-button { background-color: #2e2124; }
+        .switch-account-button { background-color: var(--card-bg-color); color: var(--text-dark); border: 1px solid var(--border-color); }
+        .switch { position: relative; display: inline-block; width: 50px; height: 28px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 28px; }
+        .slider:before { position: absolute; content: ""; height: 20px; width: 20px; left: 4px; bottom: 4px; background-color: white; transition: .4s; border-radius: 50%; }
+        input:checked + .slider { background-color: var(--secondary-brand-color); }
+        input:checked + .slider:before { transform: translateX(22px); }
+        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background-color: var(--card-bg-color); display: flex; justify-content: space-around; padding: 10px 0; border-top: 1px solid var(--border-color); z-index: 100; transition: transform 0.3s ease-in-out, background-color 0.3s, border-top-color 0.3s; }
+        .nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; color: var(--text-light); text-decoration: none; font-size: 0.75rem; cursor: pointer; }
+        .nav-item.active { color: var(--text-dark); font-weight: 600; }
+        body.dark-mode .nav-item.active { color: var(--secondary-brand-color); }
+    </style>
+</head>
+<body>
+    <div id="destinasi-modal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Pilih Destinasi</h3>
+                <button class="modal-close-btn">×</button>
+            </div>
+            <ul class="destinasi-list" id="destinasi-list"></ul>
+        </div>
+    </div>
+    
+    <div id="calendar-modal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Pilih Tanggal Check-in</h3>
+                 <button class="modal-close-btn">×</button>
+            </div>
+            <div class="calendar">
+                <div class="calendar-header">
+                    <button id="prev-month-btn">‹</button>
+                    <span id="month-year"></span>
+                    <button id="next-month-btn">›</button>
+                </div>
+                <div class="calendar-grid">
+                    <div class="calendar-cell weekday">Min</div>
+                    <div class="calendar-cell weekday">Sen</div>
+                    <div class="calendar-cell weekday">Sel</div>
+                    <div class="calendar-cell weekday">Rab</div>
+                    <div class="calendar-cell weekday">Kam</div>
+                    <div class="calendar-cell weekday">Jum</div>
+                    <div class="calendar-cell weekday">Sab</div>
+                </div>
+                <div class="calendar-grid" id="calendar-dates"></div>
+            </div>
+        </div>
+    </div>
+
+    <main id="home-page">
+        <div class="page-container">
+            <header class="hero-header">
+                <div class="top-bar">
+                    <span class="logo">KlikKost</span>
+                    <img src="https://api.iconify.design/solar/bell-bold.svg?color=white" class="notification-icon" id="notification-icon">
+                    <div id="notification-panel" class="hidden">
+                        <div class="notification-header">Notifikasi</div>
+                        <ul class="notification-list" id="notification-list"></ul>
+                    </div>
+                </div>
+            </header>
+            <div class="search-panel">
+                <div class="search-field interactive" id="destinasi-field">
+                    <img src="https://api.iconify.design/solar/map-point-wave-bold-duotone.svg?color=%236b7388">
+                    <div class="search-field-input">
+                        <label>Destinasi</label>
+                        <span id="destinasi-text">Gresik, Jawa Timur</span>
+                    </div>
+                </div>
+                <div class="search-field interactive" id="checkin-field">
+                    <img src="https://api.iconify.design/solar/calendar-bold-duotone.svg?color=%236b7388">
+                    <div class="search-field-input">
+                        <label>Check-in</label>
+                        <span id="checkin-date"></span>
+                    </div>
+                </div>
+                <button class="search-button">Cari Kost</button>
+            </div>
+            <section class="quick-menu">
+                <div class="menu-item" data-filter="Putra"><div class="menu-item-icon"><img src="https://api.iconify.design/solar/bed-bold.svg?color=%235392f9"></div><span>Putra</span></div>
+                <div class="menu-item" data-filter="Putri"><div class="menu-item-icon"><img src="https://api.iconify.design/solar/sleeping-bold.svg?color=%235392f9"></div><span>Putri</span></div>
+                <div class="menu-item" data-filter="AC"><div class="menu-item-icon"><img src="https://api.iconify.design/solar/air-conditioner-bold.svg?color=%235392f9"></div><span>Kost AC</span></div>
+                <div class="menu-item" data-filter="Peta"><div class="menu-item-icon"><img src="https://api.iconify.design/solar/map-bold.svg?color=%235392f9"></div><span>Lihat Peta</span></div>
+            </section>
+             <div class="ads-slider-wrapper">
+                <div class="ads-slider-track" id="ads-track"></div>
+            </div>
+            <section class="content-section" style="margin-top:20px;">
+                <h2 class="section-title">Penawaran Populer</h2>
+                <div class="kost-slider" id="rekomendasi-list"></div>
+            </section>
+        </div>
+    </main>
+
+    <main id="results-page" class="hidden">
+        <header class="page-header">
+            <button class="back-button">←</button>
+            <h2 class="page-title" id="results-title"></h2>
+            <div class="results-search-wrapper">
+                <span class="icon">🔍</span>
+                <input type="text" id="results-search-input" placeholder="Cari di hasil ini...">
+            </div>
+        </header>
+        <div class="results-list" id="results-list"></div>
+    </main>
+
+    <main id="detail-page" class="hidden">
+        <header class="page-header"><button class="back-button">←</button><h2 class="page-title">Detail Kost</h2></header>
+        <div class="page-container">
+            <img class="detail-image" id="detail-image" src="">
+            <div class="detail-content">
+                <h2 class="detail-title" id="detail-title"></h2>
+                <p class="detail-address" id="detail-address"></p>
+                <div class="detail-section">
+                    <h3>Fasilitas</h3>
+                    <div class="fasilitas-grid" id="detail-fasilitas"></div>
+                </div>
+                <div class="detail-section"><h3>Deskripsi</h3><p id="detail-deskripsi"></p></div>
+                <div class="detail-section">
+                    <h3>Lokasi</h3>
+                    <div class="map-container"><iframe id="detail-map" src="" allowfullscreen="" loading="lazy"></iframe></div>
+                </div>
+            </div>
+        </div>
+        <div class="booking-bar">
+            <div class="booking-price"><span class="price" id="detail-price"></span><span class="per-month">/ bulan</span></div>
+            <button class="pesan-button" id="pesan-button">Pesan Sekarang</button>
+        </div>
+    </main>
+    
+    <main id="booking-page" class="hidden">
+        <header class="page-header"><button class="back-button">←</button><h2 class="page-title">Pembayaran</h2></header>
+        <div class="booking-content">
+            <div class="detail-section">
+                <h3>Pilih Metode Pembayaran</h3>
+                <div class="payment-method-list" id="payment-methods">
+                    <div class="payment-method" data-metode="BNI Virtual Account"><label>BNI Virtual Account</label><img src="https://upload.wikimedia.org/wikipedia/id/thumb/5/55/BNI_logo.svg/1280px-BNI_logo.svg.png"></div>
+                    <div class="payment-method" data-metode="BCA Virtual Account"><label>BCA Virtual Account</label><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/BCA_logo.svg/2560px-BCA_logo.svg.png"></div>
+                    <div class="payment-method" data-metode="BRI Virtual Account"><label>BRI Virtual Account</label><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/BRI_2020.svg/1280px-BRI_2020.svg.png"></div>
+                    <div class="payment-method" data-metode="Mandiri Virtual Account"><label>Mandiri Virtual Account</label><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/ad/Bank_Mandiri_logo_2016.svg/2560px-Bank_Mandiri_logo_2016.svg.png"></div>
+                    <div class="payment-method" data-metode="ShopeePay"><label>ShopeePay</label><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/ShopeePay_logo.svg/1200px-ShopeePay_logo.svg.png" style="height: 20px;"></div>
+                    <div class="payment-method" data-metode="GoPay"><label>GoPay</label><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/86/Gopay_logo.svg/2560px-Gopay_logo.svg.png"></div>
+                </div>
+            </div>
+            <button class="form-button" style="margin-top: 30px;" id="bayar-button">Bayar Sekarang</button>
+        </div>
+    </main>
+    
+    <main id="nota-page" class="hidden">
+        <header class="page-header"><h2 class="page-title">Detail Transaksi</h2></header>
+        <div class="page-container">
+            <div class="nota-wrapper">
+                <div class="nota-main-header">
+                    <img src="https://api.iconify.design/solar/check-circle-bold.svg?color=%2328a745" alt="Success" style="width: 60px; height: 60px; margin-bottom: 10px;">
+                    <h3>Pembayaran Berhasil</h3>
+                    <p>Terima kasih telah melakukan pembayaran.</p>
+                </div>
+                 <div class="nota-section">
+                    <h4 class="nota-section-title">Ringkasan Pembayaran</h4>
+                    <div class="nota-details">
+                         <div class="detail-item">
+                            <span>Total Pembayaran</span>
+                            <strong id="nota-total-bayar"></strong>
+                        </div>
+                        <div class="detail-item">
+                            <span>Metode Pembayaran</span>
+                            <strong id="nota-metode-bayar"></strong>
+                        </div>
+                    </div>
+                </div>
+                <div class="nota-section">
+                    <h4 class="nota-section-title">Detail Transaksi</h4>
+                    <div class="nota-details">
+                        <div class="detail-item">
+                            <span>ID Transaksi</span>
+                            <strong id="nota-id-transaksi"></strong>
+                        </div>
+                         <div class="detail-item">
+                            <span>Tanggal Transaksi</span>
+                            <strong id="nota-tanggal"></strong>
+                        </div>
+                    </div>
+                </div>
+                <div class="nota-section">
+                    <h4 class="nota-section-title">Detail Pemesanan</h4>
+                     <div class="nota-details">
+                         <div class="detail-item">
+                            <span>Nama Kost</span>
+                            <strong id="nota-nama-kost"></strong>
+                        </div>
+                         <div class="detail-item">
+                            <span>Alamat</span>
+                            <strong id="nota-alamat-kost"></strong>
+                        </div>
+                         <div class="detail-item">
+                            <span>Check-in</span>
+                            <strong id="nota-checkin"></strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="nota-actions">
+                <button class="form-button" id="home-from-nota-btn">Kembali ke Beranda</button>
+            </div>
+        </div>
+    </main>
+    
+    <main id="pesanan-page" class="hidden">
+        <header class="page-header"><h2 class="page-title">Pesanan Saya</h2></header>
+        <div class="pesanan-content page-container" id="pesanan-list-container"></div>
+    </main>
+
+    <main id="inbox-page" class="hidden">
+        <header class="page-header"><h2 class="page-title">Inbox</h2></header>
+        <div class="inbox-list page-container" id="inbox-list-container"></div>
+    </main>
+
+    <main id="chat-detail-page" class="hidden">
+        <header class="page-header" id="chat-detail-header-container">
+        </header>
+        <div class="chat-messages" id="chat-messages-container"></div>
+        <div class="chat-input-bar">
+            <input type="text" id="chat-input" placeholder="Ketik pesan...">
+            <button id="send-chat-btn">➤</button>
+        </div>
+    </main>
+
+    <main id="profil-page" class="hidden">
+        <header class="page-header"><h2 class="page-title">Profil</h2></header>
+        <div class="page-container">
+            <div class="profile-header">
+                <img src="" alt="Avatar" class="profile-avatar" id="profile-avatar">
+                <h3 class="profile-name" id="profile-name"></h3>
+                <p class="profile-email" id="profile-email"></p>
+            </div>
+            <div class="profile-menu">
+                <div class="profile-menu-item" id="edit-profile-btn">
+                    <img src="https://api.iconify.design/solar/user-id-bold-duotone.svg" class="icon" style="color:var(--text-light)">
+                    <span>Edit Profil</span>
+                    <img src="https://api.iconify.design/solar/alt-arrow-right-linear.svg" class="icon" style="color:var(--text-light)">
+                </div>
+                <div class="profile-menu-item" id="peraturan-btn">
+                    <img src="https://api.iconify.design/solar/document-text-bold-duotone.svg" class="icon" style="color:var(--text-light)">
+                    <span>Peraturan & Kebijakan</span>
+                    <img src="https://api.iconify.design/solar/alt-arrow-right-linear.svg" class="icon" style="color:var(--text-light)">
+                </div>
+                <div class="profile-menu-item" id="bantuan-btn">
+                    <img src="https://api.iconify.design/solar/question-circle-bold-duotone.svg" class="icon" style="color:var(--text-light)">
+                    <span>Pusat Bantuan</span>
+                    <img src="https://api.iconify.design/solar/alt-arrow-right-linear.svg" class="icon" style="color:var(--text-light)">
+                </div>
+                <div class="profile-menu-item">
+                     <img src="https://api.iconify.design/solar/moon-bold-duotone.svg" class="icon" style="color:var(--text-light)">
+                    <span>Mode Gelap</span>
+                    <label class="switch">
+                        <input type="checkbox" id="dark-mode-toggle">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </div>
+            <div class="profile-actions">
+                <button class="logout-button" id="logout-btn">Logout</button>
+                <button class="switch-account-button" id="switch-account-btn">Ganti Akun</button>
+            </div>
+        </div>
+    </main>
+
+    <main id="edit-profil-page" class="hidden">
+        <header class="page-header">
+            <button class="back-button">←</button>
+            <h2 class="page-title">Edit Profil</h2>
+        </header>
+        <div class="form-section">
+            <div class="form-group">
+                <label for="edit-name">Nama Lengkap</label>
+                <input type="text" id="edit-name">
+            </div>
+            <div class="form-group">
+                <label for="edit-email">Email</label>
+                <input type="email" id="edit-email">
+            </div>
+            <button class="form-button" id="save-profile-btn">Simpan Perubahan</button>
+        </div>
+    </main>
+    
+    <main id="peraturan-page" class="hidden">
+        <header class="page-header">
+            <button class="back-button">←</button>
+            <h2 class="page-title">Peraturan & Kebijakan</h2>
+        </header>
+        <div class="static-content page-container">
+            <h4>1. Jam Malam</h4>
+            <p>Akses keluar-masuk kost dibatasi hingga pukul 22:00 WIB demi keamanan dan kenyamanan bersama. Harap informasikan kepada penjaga jika ada keperluan mendesak di luar jam tersebut.</p>
+
+            <h4>2. Tamu</h4>
+            <p>Tamu lawan jenis tidak diperkenankan masuk ke dalam area kamar. Tamu diwajibkan melapor dan hanya dapat diterima di area umum (ruang tamu) hingga pukul 21:00 WIB.</p>
+
+            <h4>3. Kebersihan & Kerapian</h4>
+            <p>Setiap penghuni wajib menjaga kebersihan kamar masing-masing serta area umum. Buanglah sampah pada tempatnya dan jangan meninggalkan barang pribadi di area bersama.</p>
+
+            <h4>4. Pembayaran</h4>
+            <ul>
+                <li>Pembayaran sewa kost dilakukan paling lambat tanggal 5 setiap bulannya.</li>
+                <li>Keterlambatan pembayaran akan dikenakan denda sesuai kebijakan yang berlaku.</li>
+                <li>Pembayaran dapat dilakukan melalui transfer bank atau secara tunai kepada pengelola.</li>
+            </ul>
+
+            <h4>5. Fasilitas</h4>
+            <p>Gunakan fasilitas yang ada dengan bijak. Matikan lampu, AC, dan peralatan elektronik lainnya saat meninggalkan kamar. Kerusakan fasilitas akibat kelalaian akan menjadi tanggung jawab penghuni.</p>
+        </div>
+    </main>
+    
+    <main id="bantuan-page" class="hidden">
+        <header class="page-header">
+            <button class="back-button">←</button>
+            <h2 class="page-title">Pusat Bantuan</h2>
+        </header>
+        <div class="static-content page-container">
+            <div class="faq-item">
+                <h4 class="faq-question">Bagaimana cara memesan kost?</h4>
+                <p class="faq-answer">Anda dapat memesan melalui halaman detail kost dengan menekan tombol "Pesan Sekarang", kemudian melanjutkan ke halaman pembayaran.</p>
+            </div>
+             <div class="faq-item">
+                <h4 class="faq-question">Apa saja metode pembayaran yang diterima?</h4>
+                <p class="faq-answer">Kami menerima pembayaran melalui Virtual Account (BNI, BCA), e-wallet (GoPay, ShopeePay), dan transfer bank lainnya.</p>
+            </div>
+             <div class="faq-item">
+                <h4 class="faq-question">Bagaimana jika saya ingin membatalkan pesanan?</h4>
+                <p class="faq-answer">Anda dapat menghapus pesanan melalui halaman "Pesanan Saya". Untuk kebijakan pengembalian dana, silakan hubungi pemilik kost terkait melalui fitur "Inbox".</p>
+            </div>
+             <div class="faq-item">
+                <h4 class="faq-question">Bagaimana cara mengubah profil saya?</h4>
+                <p class="faq-answer">Masuk ke tab "Profil", lalu pilih menu "Edit Profil". Setelah mengubah data, tekan tombol "Simpan Perubahan".</p>
+            </div>
+        </div>
+    </main>
+
+    <nav class="bottom-nav" id="bottom-nav">
+        <a class="nav-item active" data-page="home"><img src="https://api.iconify.design/solar/home-smile-bold.svg?color=%235392f9"><span>Beranda</span></a>
+        <a class="nav-item" data-page="pesanan"><img src="https://api.iconify.design/solar/bookmark-square-outline.svg?color=%236b7388"><span>Pesanan</span></a>
+        <a class="nav-item" data-page="inbox"><img src="https://api.iconify.design/solar/chat-dots-outline.svg?color=%236b7388"><span>Inbox</span></a>
+        <a class="nav-item" data-page="profil"><img src="https://api.iconify.design/solar/user-circle-outline.svg?color=%236b7388"><span>Profil</span></a>
+    </nav>
+    
+    <script>
+    document.addEventListener("DOMContentLoaded", () => {
+        // --- DATA LENGKAP ---
+        const kostData = [
+            { id: 1, nama: "Kost GKB Millennial", alamat: "Gresik Kota Baru", gambar: "https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=500", hargaDiskon: 1500000, tipe: "Putri", fasilitas: ["AC", "Wi-Fi", "K. Mandi Dalam"], deskripsi: "Kost modern dengan fasilitas lengkap di pusat GKB, cocok untuk mahasiswi dan karyawati.", lat: -7.1593, lng: 112.6625 },
+            { id: 2, nama: "The Randuagung Suite", alamat: "Kebomas, Gresik", gambar: "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=500", hargaDiskon: 1750000, tipe: "Putra", fasilitas: ["AC", "Parkir Mobil", "Dapur Bersama"], deskripsi: "Kost eksekutif dengan keamanan 24 jam dan akses mudah ke jalan tol.", lat: -7.1702, lng: 112.6341 },
+            { id: 3, nama: "Omah Manyar Modern", alamat: "Manyar, Gresik", gambar: "https://images.unsplash.com/photo-1616046229478-9901c5536a45?w=500", hargaDiskon: 1100000, tipe: "Campur", fasilitas: ["Wi-Fi", "Dapur Bersama"], deskripsi: "Kost nyaman dengan harga terjangkau, lingkungan tenang.", lat: -7.1488, lng: 112.6865 },
+        ];
+        const adsData = [
+            { class: 'promo-1', title: "Cari Kost di Surabaya?", content: "Ribuan pilihan kost dekat kampus & kantor menantimu. Mulai dari 800rb/bulan!", button: "Cari Sekarang" },
+            { class: 'promo-2', title: "Kost Eksklusif Pusat Kota!", content: "Nikmati kenyamanan premium dengan fasilitas bintang 5. Kamar terbatas!", button: "Lihat Detail" },
+            { class: 'promo-3', title: "Diskon 20% Penghuni Baru", content: "Pesan kost pertamamu sekarang dan dapatkan diskon spesial! Penawaran terbatas.", button: "Klaim Diskon" }
+        ];
+        const notificationsData = [
+            { title: "Promo Spesial Untukmu!", desc: "Diskon 25% di kost area GKB." },
+            { title: "Pemesanan Berhasil", desc: "Kost GKB Millennial telah dikonfirmasi." }
+        ];
+        let pesananData = [
+            { bookingId: 'BOOK-001', kostId: 1, checkIn: "01 Agu 2025", checkOut: "31 Agu 2025", status: "Lunas" },
+            { bookingId: 'BOOK-002', kostId: 2, checkIn: "15 Jul 2025", checkOut: "14 Agu 2025", status: "Menunggu Pembayaran" },
+            { bookingId: 'BOOK-003', kostId: 3, checkIn: "05 Jul 2025", checkOut: "04 Agu 2025", status: "Lunas" },
+            { bookingId: 'BOOK-004', kostId: 1, checkIn: "01 Jun 2025", checkOut: "30 Jun 2025", status: "Lunas" },
+            { bookingId: 'BOOK-005', kostId: 2, checkIn: "15 Mei 2025", checkOut: "14 Jun 2025", status: "Menunggu Pembayaran" },
+            { bookingId: 'BOOK-006', kostId: 3, checkIn: "01 Mei 2025", checkOut: "31 Mei 2025", status: "Lunas" },
+            { bookingId: 'BOOK-007', kostId: 1, checkIn: "01 Apr 2025", checkOut: "30 Apr 2025", status: "Lunas" }
+        ];
+        let inboxData = [
+            { chatId: 1, contactName: "Bpk. Ahmad (Kost GKB)", avatar: "https://randomuser.me/api/portraits/men/32.jpg", timestamp: "10:45", unread: true, messages: [
+                { sender: 'contact', text: 'Halo, ada yang bisa dibantu?' },
+                { sender: 'me', text: 'Halo Pak, mau tanya apakah parkir mobil aman?' },
+                { sender: 'contact', text: 'Aman sekali, kita ada CCTV dan security 24 jam.' },
+                { sender: 'contact', text: 'Baik, ditunggu kedatangannya.' },
+            ]},
+            { chatId: 2, contactName: "Ibu Sarah (Omah Manyar)", avatar: "https://randomuser.me/api/portraits/women/44.jpg", timestamp: "Kemarin", unread: false, messages: [
+                { sender: 'me', text: 'Bu, saya sudah transfer ya untuk booking bulan ini.' },
+                { sender: 'contact', text: 'Oke, sudah saya siapkan kamarnya.' },
+            ]},
+            { chatId: 3, contactName: "Admin KlikKost", avatar: "https://api.iconify.design/solar/user-check-bold.svg", timestamp: "2 hari lalu", unread: false, messages: [
+                { sender: 'contact', text: 'Terima kasih atas pembayaran Anda.' },
+            ]}
+        ];
+        let userData = {
+            name: "Budi Santoso",
+            email: "budi.santoso@example.com",
+            avatar: "https://randomuser.me/api/portraits/men/11.jpg"
+        };
+        const destinasiJatim = ["Surabaya", "Malang", "Sidoarjo", "Gresik", "Jember", "Banyuwangi", "Kediri", "Madiun", "Probolinggo", "Pasuruan", "Mojokerto", "Batu"];
+
+        // --- ELEMEN ---
+        const pages = { 
+            home: document.getElementById('home-page'), 
+            results: document.getElementById('results-page'), 
+            detail: document.getElementById('detail-page'), 
+            booking: document.getElementById('booking-page'),
+            nota: document.getElementById('nota-page'),
+            pesanan: document.getElementById('pesanan-page'),
+            inbox: document.getElementById('inbox-page'),
+            profil: document.getElementById('profil-page'),
+            editProfil: document.getElementById('edit-profil-page'),
+            chatDetail: document.getElementById('chat-detail-page'),
+            peraturan: document.getElementById('peraturan-page'),
+            bantuan: document.getElementById('bantuan-page'),
+        };
+        const bottomNav = document.getElementById('bottom-nav');
+        const destinasiModal = document.getElementById('destinasi-modal');
+        const calendarModal = document.getElementById('calendar-modal');
+        let pageHistory = ['home'];
+        let currentChatId = null;
+        let currentBookingKostId = null;
+        let selectedPaymentMethod = null;
+        let selectedDestination = "Gresik, Jawa Timur";
+        let selectedCheckinDateObj = new Date();
+        let currentMonth = selectedCheckinDateObj.getMonth();
+        let currentYear = selectedCheckinDateObj.getFullYear();
+
+        // --- NAVIGASI ---
+        function navigateTo(pageName, isNavigatingBack = false) {
+            if (!pages[pageName]) return;
+            if (!isNavigatingBack && pageName !== pageHistory[pageHistory.length - 1]) { 
+                pageHistory.push(pageName); 
+            }
+            Object.values(pages).forEach(page => page.classList.add('hidden'));
+            pages[pageName].classList.remove('hidden');
+            window.scrollTo(0, 0);
+            updateNav(pageName);
+
+            const specialPages = ['detail', 'booking', 'editProfil', 'chatDetail', 'peraturan', 'bantuan', 'nota'];
+            if (specialPages.includes(pageName)) {
+                bottomNav.style.transform = 'translateY(100%)';
+            } else {
+                bottomNav.style.transform = 'translateY(0)';
+            }
+        }
+
+        function navigateBack() {
+            if (pageHistory.length > 1) {
+                pageHistory.pop();
+                const previousPage = pageHistory[pageHistory.length - 1];
+                navigateTo(previousPage, true);
+            }
+        }
+        
+        // --- FUNGSI RENDER ---
+        const formatHarga = (harga) => new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(harga);
+        
+        function renderProfile() {
+            document.getElementById('profile-avatar').src = userData.avatar;
+            document.getElementById('profile-name').textContent = userData.name;
+            document.getElementById('profile-email').textContent = userData.email;
+        }
+
+        function renderEditProfile() {
+            document.getElementById('edit-name').value = userData.name;
+            document.getElementById('edit-email').value = userData.email;
+        }
+        
+        function renderInbox() {
+            const container = document.getElementById('inbox-list-container');
+            container.innerHTML = '';
+            inboxData.sort((a, b) => b.unread - a.unread);
+            inboxData.forEach(chat => {
+                const lastMessage = chat.messages[chat.messages.length - 1] || { text: 'Tidak ada pesan' };
+                const unreadClass = chat.unread ? 'unread' : '';
+                const unreadDot = chat.unread ? '<div class="unread-dot"></div>' : '';
+                const chatElement = document.createElement('div');
+                chatElement.className = 'chat-item';
+                chatElement.dataset.chatId = chat.chatId;
+                chatElement.innerHTML = `
+                    <img src="${chat.avatar}" class="chat-avatar">
+                    <div class="chat-content">
+                        <div class="chat-header">
+                            <span class="chat-name">${chat.contactName}</span>
+                            <span class="chat-timestamp">${chat.timestamp}</span>
+                        </div>
+                        <p class="chat-preview ${unreadClass}">${lastMessage.text}</p>
+                    </div>
+                    ${unreadDot}
+                `;
+                container.appendChild(chatElement);
+            });
+        }
+
+        function renderChatDetail(chatId) {
+            currentChatId = chatId;
+            const chat = inboxData.find(c => c.chatId === chatId);
+            if (!chat) return;
+
+            const headerContainer = document.getElementById('chat-detail-header-container');
+            headerContainer.innerHTML = `
+                <button class="back-button">←</button>
+                <div class="chat-detail-header">
+                    <img src="${chat.avatar}" alt="Avatar">
+                    <span>${chat.contactName}</span>
+                </div>
+            `;
+
+            const messagesContainer = document.getElementById('chat-messages-container');
+            messagesContainer.innerHTML = '';
+            chat.messages.forEach(msg => {
+                const bubble = document.createElement('div');
+                bubble.className = `chat-bubble ${msg.sender === 'me' ? 'sent' : 'received'}`;
+                bubble.textContent = msg.text;
+                messagesContainer.appendChild(bubble);
+            });
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        function renderPesanan() {
+            const container = document.getElementById('pesanan-list-container');
+            container.innerHTML = ''; 
+            if (pesananData.length === 0) {
+                container.innerHTML = `<p id="no-pesanan">Anda belum memiliki pesanan.</p>`;
+                return;
+            }
+            pesananData.forEach(pesanan => {
+                const kost = kostData.find(k => k.id === pesanan.kostId);
+                if (!kost) return;
+                
+                const statusClass = pesanan.status === 'Lunas' ? 'lunas' : 'menunggu';
+                let footerButtons = `<button class="delete-button" data-booking-id="${pesanan.bookingId}">Hapus</button>`;
+                if (pesanan.status === 'Menunggu Pembayaran') {
+                    footerButtons = `<button class="pay-button" data-booking-id="${pesanan.bookingId}">Bayar Sekarang</button>` + footerButtons;
+                }
+                
+                const cardElement = document.createElement('div');
+                cardElement.className = 'pesanan-card';
+                cardElement.dataset.id = kost.id;
+                cardElement.innerHTML = `
+                    <div class="pesanan-card-header">
+                        <img src="${kost.gambar}" class="pesanan-card-img">
+                        <div class="pesanan-card-info">
+                            <h4>${kost.nama}</h4>
+                            <p>Check-in: ${pesanan.checkIn}</p>
+                            <span class="status-badge ${statusClass}">${pesanan.status}</span>
+                        </div>
+                    </div>
+                    <div class="pesanan-card-footer">
+                        ${footerButtons}
+                    </div>
+                `;
+                container.appendChild(cardElement);
+            });
+        }
+        
+        function renderSearchResults(data) {
+            const container = document.getElementById('results-list');
+            container.innerHTML = data.map(k => `<div class="result-card" data-id="${k.id}"><img src="${k.gambar}"><div class="result-info"><h3>${k.nama}</h3><p>${k.alamat}</p></div></div>`).join('');
+        }
+
+        function renderRekomendasi() { 
+            const container = document.getElementById('rekomendasi-list');
+            if(container) {
+                container.innerHTML = kostData.map(k => `<div class="kost-card" data-id="${k.id}"><img src="${k.gambar}" class="kost-card-image"><div class="kost-card-content"><h3 class="kost-card-title">${k.nama}</h3></div></div>`).join('');
+            }
+        }
+        function renderAds() {
+            const container = document.getElementById('ads-track');
+            if (container) {
+                const adContent = adsData.map(ad => `<div class="ad-card ${ad.class}"><h3 class="ad-title">${ad.title}</h3><p class="ad-content">${ad.content}</p><button class="ad-button">${ad.button}</button></div>`).join('');
+                container.innerHTML = adContent + adContent;
+            }
+        }
+        function renderNotifications() {
+            const container = document.getElementById('notification-list');
+            if(container) {
+                container.innerHTML = notificationsData.map(n => `<li class="notification-item"><strong>${n.title}</strong><p>${n.desc}</p></li>`).join('');
+            }
+        }
+        function renderDetailPage(kost) {
+            document.getElementById('detail-image').src = kost.gambar;
+            document.getElementById('detail-title').textContent = kost.nama;
+            document.getElementById('detail-address').textContent = kost.alamat;
+            document.getElementById('detail-deskripsi').textContent = kost.deskripsi;
+            document.getElementById('detail-price').textContent = formatHarga(kost.hargaDiskon);
+            document.getElementById('detail-fasilitas').innerHTML = kost.fasilitas.map(f => `<div class="fasilitas-item"><span>${f}</span></div>`).join('');
+            document.getElementById('detail-map').src = `https://maps.google.com/maps?q=${kost.lat},${kost.lng}&hl=es;z=14&output=embed`;
+        }
+        
+        function renderDestinasiModal() {
+            const listEl = document.getElementById('destinasi-list');
+            listEl.innerHTML = '';
+            destinasiJatim.forEach(kota => {
+                const item = document.createElement('li');
+                item.className = 'destinasi-item';
+                item.textContent = kota;
+                item.addEventListener('click', () => {
+                    selectedDestination = kota;
+                    document.getElementById('destinasi-text').textContent = kota;
+                    destinasiModal.classList.add('hidden');
+                });
+                listEl.appendChild(item);
+            });
+        }
+
+        function renderCalendar(month, year) {
+            const monthYearEl = document.getElementById('month-year');
+            const datesContainer = document.getElementById('calendar-dates');
+            datesContainer.innerHTML = '';
+
+            const today = new Date();
+            const firstDay = new Date(year, month).getDay();
+            const daysInMonth = 32 - new Date(year, month, 32).getDate();
+
+            const monthNames = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+            monthYearEl.textContent = `${monthNames[month]} ${year}`;
+
+            for (let i = 0; i < firstDay; i++) {
+                datesContainer.innerHTML += `<div class="calendar-cell empty"></div>`;
+            }
+
+            for (let i = 1; i <= daysInMonth; i++) {
+                const cell = document.createElement('div');
+                cell.className = 'calendar-cell date-cell';
+                cell.textContent = i;
+                
+                const thisDate = new Date(year, month, i);
+
+                if (i === today.getDate() && month === today.getMonth() && year === today.getFullYear()) {
+                    cell.classList.add('today');
+                }
+                if (selectedCheckinDateObj && i === selectedCheckinDateObj.getDate() && month === selectedCheckinDateObj.getMonth() && year === selectedCheckinDateObj.getFullYear()) {
+                    cell.classList.add('selected');
+                }
+
+                cell.addEventListener('click', () => {
+                    selectedCheckinDateObj = thisDate;
+                    document.getElementById('checkin-date').textContent = thisDate.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+                    calendarModal.classList.add('hidden');
+                });
+                datesContainer.appendChild(cell);
+            }
+        }
+        
+        function renderNota() {
+            const kost = kostData.find(k => k.id === currentBookingKostId);
+            if (!kost) return;
+
+            document.getElementById('nota-total-bayar').textContent = formatHarga(kost.hargaDiskon);
+            document.getElementById('nota-id-transaksi').textContent = `TRX-${Date.now()}`;
+            document.getElementById('nota-tanggal').textContent = new Date().toLocaleString('id-ID', { dateStyle: 'long', timeStyle: 'short' });
+            document.getElementById('nota-nama-kost').textContent = kost.nama;
+            document.getElementById('nota-alamat-kost').textContent = kost.alamat;
+            document.getElementById('nota-checkin').textContent = selectedCheckinDateObj.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+            document.getElementById('nota-metode-bayar').textContent = selectedPaymentMethod || 'Belum dipilih';
+        }
+        
+        // --- DARK MODE ---
+        const darkModeToggle = document.getElementById('dark-mode-toggle');
+        if (localStorage.getItem('theme') === 'dark') {
+            document.body.classList.add('dark-mode');
+            darkModeToggle.checked = true;
+        }
+        darkModeToggle.addEventListener('change', () => {
+            document.body.classList.toggle('dark-mode');
+            localStorage.setItem('theme', darkModeToggle.checked ? 'dark' : 'light');
+        });
+
+        // --- EVENT LISTENERS ---
+        document.body.addEventListener('click', (e) => {
+            const target = e.target;
+            const closest = (selector) => target.closest(selector);
+            const targetId = target.id;
+            const closestMenuItem = closest('.profile-menu-item');
+            
+            if (closest('.back-button')) { navigateBack(); return; }
+            if (closest('.notification-icon')) {
+                e.stopPropagation();
+                document.getElementById('notification-panel').classList.toggle('hidden');
+                return;
+            }
+
+            // Aksi pada menu profil
+            if (closestMenuItem) {
+                const menuItemId = closestMenuItem.id;
+                if (menuItemId === 'edit-profile-btn') { renderEditProfile(); navigateTo('editProfil'); return; }
+                if (menuItemId === 'peraturan-btn') { navigateTo('peraturan'); return; }
+                if (menuItemId === 'bantuan-btn') { navigateTo('bantuan'); return; }
+            }
+
+            const actionMap = {
+                'bayar-button': () => {
+                    if (!selectedPaymentMethod) {
+                        alert('Silakan pilih metode pembayaran terlebih dahulu.');
+                        return;
+                    }
+                    renderNota();
+                    navigateTo('nota');
+                },
+                 'home-from-nota-btn': () => {
+                    pageHistory = ['home']; // Reset history
+                    navigateTo('home');
+                },
+                'save-profile-btn': () => {
+                    userData.name = document.getElementById('edit-name').value;
+                    userData.email = document.getElementById('edit-email').value;
+                    renderProfile();
+                    alert('Profil berhasil diperbarui!');
+                    navigateBack();
+                },
+                'logout-btn': () => {
+                    if (confirm('Apakah Anda yakin ingin logout?')) {
+                        alert('Anda telah logout.');
+                        navigateTo('home');
+                    }
+                },
+                'switch-account-btn': () => alert('Membuka halaman Ganti Akun...'),
+                'send-chat-btn': () => {
+                    const input = document.getElementById('chat-input');
+                    const messageText = input.value.trim();
+                    if (messageText && currentChatId) {
+                        const chat = inboxData.find(c => c.chatId === currentChatId);
+                        chat.messages.push({ sender: 'me', text: messageText });
+                        chat.timestamp = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+                        renderChatDetail(currentChatId);
+                        input.value = '';
+                        setTimeout(() => {
+                            chat.messages.push({ sender: 'contact', text: 'Siap, terima kasih infonya.' });
+                            renderChatDetail(currentChatId);
+                        }, 1200);
+                    }
+                },
+                 'pesan-button': () => {
+                    const detailTitle = document.getElementById('detail-title').textContent;
+                    const kost = kostData.find(k => k.nama === detailTitle);
+                    if(kost) currentBookingKostId = kost.id;
+                    navigateTo('booking');
+                }
+            };
+            if (actionMap[targetId]) { actionMap[targetId](); return; }
+
+            if (target.classList.contains('delete-button')) { 
+                const bookingId = target.dataset.bookingId;
+                if(confirm("Apakah Anda yakin ingin menghapus pesanan ini?")) {
+                    pesananData = pesananData.filter(p => p.bookingId !== bookingId);
+                    renderPesanan();
+                }
+            }
+            else if (target.classList.contains('pay-button')) { navigateTo('booking'); }
+            else if (closest('.chat-item')) {
+                const chatId = parseInt(closest('.chat-item').dataset.chatId);
+                const chat = inboxData.find(c => c.chatId === chatId);
+                if(chat) chat.unread = false;
+                renderChatDetail(chatId);
+                navigateTo('chatDetail');
+            }
+            else if (closest('.kost-card') || closest('.result-card') || closest('.pesanan-card-header')) {
+                const card = closest('.kost-card, .result-card, .pesanan-card-header');
+                const kostId = parseInt(card.dataset.id);
+                const data = kostData.find(k => k.id === kostId);
+                if (data) {
+                    renderDetailPage(data);
+                    navigateTo('detail');
+                }
+            }
+            else if (closest('.menu-item') || closest('.search-button')) {
+                if (closest('.search-button') && (!selectedDestination || !selectedCheckinDateObj)) {
+                    alert('Silakan pilih destinasi dan tanggal check-in terlebih dahulu.');
+                    return;
+                }
+                const filter = closest('.menu-item, .search-button').dataset.filter || "Semua";
+                let data, title = "Hasil Pencarian";
+                if (filter === "Peta") { alert("Membuka Peta..."); return; }
+                if (filter === "Putra") { data = kostData.filter(k => k.tipe === "Putra" || k.tipe === "Campur"); title = "Pilihan Kost Putra"; }
+                else if (filter === "Putri") { data = kostData.filter(k => k.tipe === "Putri" || k.tipe === "Campur"); title = "Pilihan Kost Putri"; }
+                else if (filter === "AC") { data = kostData.filter(k => k.fasilitas.includes("AC")); title = "Pilihan Kost AC"; }
+                else { data = kostData; }
+                document.getElementById('results-title').textContent = title;
+                renderSearchResults(data);
+                navigateTo('results');
+            }
+            else if (closest('.payment-method')) {
+                document.querySelectorAll('.payment-method').forEach(p => p.classList.remove('selected'));
+                const paymentMethodDiv = closest('.payment-method');
+                paymentMethodDiv.classList.add('selected');
+                selectedPaymentMethod = paymentMethodDiv.dataset.metode;
+            }
+        });
+        
+        window.addEventListener('click', (e) => { 
+            const notificationPanel = document.getElementById('notification-panel');
+            if (notificationPanel && !notificationPanel.classList.contains('hidden') && !notificationPanel.contains(e.target) && !e.target.closest('.notification-icon')) { 
+                notificationPanel.classList.add('hidden'); 
+            }
+            if (destinasiModal && !destinasiModal.classList.contains('hidden') && !e.target.closest('.modal-content') && !e.target.closest('#destinasi-field')) {
+                destinasiModal.classList.add('hidden');
+            }
+            if (calendarModal && !calendarModal.classList.contains('hidden') && !e.target.closest('.modal-content') && !e.target.closest('#checkin-field')) {
+                calendarModal.classList.add('hidden');
+            }
+        });
+
+        // Listener untuk Panel Pencarian Interaktif
+        document.getElementById('destinasi-field').addEventListener('click', () => {
+            renderDestinasiModal();
+            destinasiModal.classList.remove('hidden');
+        });
+        document.querySelector('#destinasi-modal .modal-close-btn').addEventListener('click', () => {
+            destinasiModal.classList.add('hidden');
+        });
+        document.getElementById('checkin-field').addEventListener('click', () => {
+            renderCalendar(currentMonth, currentYear);
+            calendarModal.classList.remove('hidden');
+        });
+        document.querySelector('#calendar-modal .modal-close-btn').addEventListener('click', () => {
+            calendarModal.classList.add('hidden');
+        });
+        document.getElementById('prev-month-btn').addEventListener('click', () => {
+            currentMonth--;
+            if (currentMonth < 0) { currentMonth = 11; currentYear--; }
+            renderCalendar(currentMonth, currentYear);
+        });
+        document.getElementById('next-month-btn').addEventListener('click', () => {
+            currentMonth++;
+            if (currentMonth > 11) { currentMonth = 0; currentYear++; }
+            renderCalendar(currentMonth, currentYear);
+        });
+        
+        // --- NAVIGASI BAWAH ---
+        document.getElementById('bottom-nav').addEventListener('click', (e) => {
+            const navItem = e.target.closest('.nav-item');
+            if (navItem) {
+                const pageName = navItem.dataset.page;
+                if (pages[pageName]) {
+                    if (pageName === 'pesanan') renderPesanan();
+                    else if (pageName === 'inbox') renderInbox();
+                    else if (pageName === 'profil') renderProfile();
+                    navigateTo(pageName);
+                }
+            }
+        });
+        
+        function updateNav(activePage) {
+            document.querySelectorAll('.nav-item').forEach(item => {
+                const page = item.dataset.page;
+                const icon = item.querySelector('img');
+                const iconName = icon.src.split('/').pop().split('?')[0];
+                let newIconName = iconName.replace('-bold', '-outline').replace('-smile-bold', '-smile-outline');
+                
+                item.classList.remove('active');
+                if (page === activePage) {
+                    item.classList.add('active');
+                    newIconName = newIconName.replace('-outline', '-bold');
+                    if (page === 'home') newIconName = 'home-smile-bold.svg';
+                    icon.src = `https://api.iconify.design/solar/${newIconName}?color=%235392f9`;
+                } else {
+                    icon.src = `https://api.iconify.design/solar/${newIconName}?color=%236b7388`;
+                }
+            });
+        }
+        
+        // --- INISIALISASI ---
+        renderAds();
+        renderNotifications();
+        renderRekomendasi();
+        const checkinDateEl = document.getElementById('checkin-date');
+        if (checkinDateEl) {
+             checkinDateEl.textContent = selectedCheckinDateObj.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+        }
+    });
+    </script>
+</body>
+</html>

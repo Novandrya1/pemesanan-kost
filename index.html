@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Onboarding Klikkost</title>
+    <style>
+        /* === RESET & DASAR === */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body,
+        html {
+            height: 100%;
+            font-family: "Arial", sans-serif;
+            overflow: hidden;
+            background-color: #fefefe;
+        }
+
+        /* === SLIDER CONTAINER === */
+        .slider {
+            display: flex;
+            width: 400%; /* 4 slide = 400% */
+            height: 100vh;
+            transition: transform 0.5s ease;
+        }
+
+        .slide {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        /* === SLIDE 1: GAMBAR DENGAN OVERLAY === */
+        .slide-image {
+            cursor: pointer; /* Menambahkan cursor pointer untuk menandakan bisa diklik */
+        }
+        
+        .slide-image .background-image {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 0;
+        }
+
+        .slide-image .overlay {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            z-index: 1;
+        }
+
+        .slide-image .content {
+            position: absolute;
+            top: 45%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            z-index: 2;
+        }
+
+        .slide-image .logo {
+            width: 45vw;
+            max-width: 260px;
+            min-width: 260px;
+            margin-bottom: 8px;
+        }
+
+        .slide-image .tagline {
+            font-size: 14px;
+            font-weight: 500;
+            color: #fff;
+            margin-top: 1px;
+            background: none;
+            padding: 0;
+            letter-spacing: 0.2px;
+            font-style: normal;
+            white-space: nowrap;
+        }
+
+        @media (min-width: 768px) {
+            .slide-image .tagline {
+                font-size: 16px;
+            }
+        }
+
+        /* === SLIDE PUTIH === */
+        .slide-white {
+            background: #ffffff;
+            color: #1c1c1c;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 24px;
+            text-align: center;
+        }
+
+        .slide-white .logo.large {
+            width: 220px;
+            margin-bottom: 32px;
+        }
+
+        .slide-white .title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .slide-white .desc {
+            font-size: 14px;
+            color: #555;
+            line-height: 1.6;
+        }
+
+        .onboard-img {
+            width: 60%;
+            max-width: 240px;
+            margin-bottom: 24px;
+            margin-top: -16px;
+        }
+
+        /* === KONTROL SLIDE === */
+        .slide-controls, .slide-controls-row {
+            position: absolute;
+            bottom: 32px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+            z-index: 10;
+            width: 100%;
+            padding: 0 24px;
+        }
+        
+        .slide-controls-row .buttons {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .indicator {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+        
+        .slide-controls-row .indicator {
+             margin-bottom: 16px;
+        }
+
+        /* === DOTS === */
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: #ccc;
+            transition: background-color 0.3s ease;
+        }
+
+        .dot.active {
+            background-color: #3c312b;
+        }
+
+        /* === TOMBOL === */
+        .next-btn, .skip-btn {
+            border: none;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .next-btn {
+            background-color: #3c312b;
+            color: white;
+            padding: 12px 28px;
+            border-radius: 24px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .skip-btn {
+            background: none;
+            color: #aaa;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="slider" id="onboarding">
+        <section class="slide slide-image" id="slide1">
+            <img src="/gambar/onboarding.jpg"class="background-image" />
+            <div class="overlay"></div>
+            <div class="content">
+                <img src="/gambar/logo klikkost.png" alt="Klikkost Logo" class="logo" style="filter: brightness(0) invert(1);" />
+                <p class="tagline">Cari Kost Tanpa Ribet, Temukan Nyamannya.</p>
+            </div>
+        </section>
+
+        <section class="slide slide-white">
+             <img src="/gambar/logo klikkost.png" alt="Klikkost Logo" class="logo large" />
+            <h2 class="title">Kenapa harus kami?</h2>
+            <p class="desc">
+                Membantu anda menemukan kos-kosan dengan<br />
+                sangat mudah dan cepat.
+            </p>
+            <div class="slide-controls">
+                <div class="indicator global-indicator">
+                    <span class="dot active"></span>
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                </div>
+                <button class="next-btn">Lanjut <span>&rarr;</span></button>
+            </div>
+        </section>
+
+        <section class="slide slide-white">
+             <img src="/gambar/gambar onb 1.png" alt="Ilustrasi 2" class="onboard-img" />
+            <h2 class="title">Kenapa harus kami?</h2>
+            <p class="desc">
+                Memberikan anda informasi seputar harga kost<br />
+                dari yang termurah dan tertinggi
+            </p>
+            <div class="slide-controls-row">
+                <div class="indicator global-indicator">
+                    <span class="dot"></span>
+                    <span class="dot active"></span>
+                    <span class="dot"></span>
+                </div>
+                <div class="buttons">
+                    <button class="skip-btn">Lewati</button>
+                    <button class="next-btn">Lanjut <span>&rarr;</span></button>
+                </div>
+            </div>
+        </section>
+
+        <section class="slide slide-white">
+            <img src="/gambar/gambar onb2.png" alt="Ilustrasi 3" class="onboard-img" />
+            <h2 class="title">Kenapa harus kami?</h2>
+            <p class="desc">Temukan kost sesuai dengan karakter pribadi anda</p>
+            <div class="slide-controls-row">
+                <div class="indicator global-indicator">
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                    <span class="dot active"></span>
+                </div>
+                <div class="buttons">
+                    <button class="skip-btn">Lewati</button>
+                    <button class="next-btn">Lanjut <span>&rarr;</span></button>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            let currentSlide = 0;
+            const slider = document.querySelector(".slider");
+            const slides = document.querySelectorAll(".slide");
+            const nextButtons = document.querySelectorAll(".next-btn");
+            const skipButtons = document.querySelectorAll(".skip-btn");
+            const dotGroups = document.querySelectorAll(".global-indicator");
+            const totalSlides = slides.length;
+
+            function updateDots(index) {
+                // Indeks untuk dot dimulai dari 0 (slide 2 -> dot index 0)
+                const dotIndex = index - 1; 
+                dotGroups.forEach((group) => {
+                    const dots = group.querySelectorAll(".dot");
+                    dots.forEach((dot, i) => {
+                        dot.classList.toggle("active", i === dotIndex);
+                    });
+                });
+            }
+
+            function goToSlide(index) {
+                if (index >= 0 && index < totalSlides) {
+                    slider.style.transform = `translateX(-${index * 100}vw)`;
+                    currentSlide = index;
+                    // Hanya update dots untuk slide 2, 3, dan 4 (indeks 1, 2, 3)
+                    if (index >= 1 && index <= 3) {
+                        updateDots(index);
+                    }
+                }
+            }
+
+            function goToNextOrFinish() {
+    if (currentSlide < totalSlides - 1) {
+        goToSlide(currentSlide + 1);
+    } else {
+        // Aksi setelah slide terakhir, misalnya pindah halaman
+        window.location.href = "login.html";
+    }
+}
+            
+            // Event listener untuk semua tombol "Lanjut"
+            nextButtons.forEach((btn) => {
+                btn.addEventListener("click", goToNextOrFinish);
+            });
+
+// Event listener untuk semua tombol "Lewati"
+skipButtons.forEach((btn) => {
+    btn.addEventListener("click", () => {
+        window.location.href = "login.html";
+    });
+});
+
+            // Fungsionalitas klik di mana saja pada slide pertama
+            const slide1 = document.getElementById("slide1");
+            if (slide1) {
+                slide1.addEventListener("click", (e) => {
+                    // Pastikan yang diklik bukan tombol interaktif jika ada
+                    if (e.target.tagName !== 'BUTTON' && currentSlide === 0) {
+                        goToSlide(1);
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>
