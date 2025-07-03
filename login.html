@@ -83,15 +83,20 @@
         }
 
         /* === LOGIN CONTAINER === */
-        .login-container {
-            display: flex; /* Ditampilkan pertama kali */
+        .login-container,
+        .signup-container {
+            display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            min-height: 100vh;
+            min-height: 100%;
             padding: 32px 24px;
             background-color: #fff;
             text-align: center;
+        }
+        
+        .signup-container {
+            display: none; /* Disembunyikan pertama kali */
         }
 
         .login-img {
@@ -175,17 +180,6 @@
         }
         
         /* === SIGN UP CONTAINER === */
-        .signup-container {
-            display: none; /* Disembunyikan pertama kali */
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            padding: 32px 24px;
-            background-color: #fff;
-            text-align: center;
-        }
-
         .signup-img {
             width: 200px;
             margin-bottom: 20px;
@@ -203,6 +197,7 @@
             top: 36px;
             cursor: pointer;
             font-size: 16px;
+            user-select: none;
         }
 
         .signup-container .agreement {
@@ -230,6 +225,25 @@
             color: #3b82f6;
             text-decoration: none;
             font-weight: 500;
+        }
+
+        /* === ATURAN RESPONSIVE UNTUK LAYAR LEBAR (TABLET & DESKTOP) === */
+        @media (min-width: 768px) {
+            body {
+                background-color: #f0f2f5; /* Latar belakang abu-abu agar kartu menonjol */
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .login-container, .signup-container {
+                max-width: 420px; /* Batasi lebar form di layar besar */
+                min-height: auto;
+                height: auto;
+                border-radius: 16px;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+                padding: 40px; /* Beri padding lebih di desktop */
+            }
         }
     </style>
 </head>
@@ -347,20 +361,20 @@
         // =======================
         // LOGIN VALIDATION
         // =======================
-function loginUser() {
-    const email = document.getElementById("email")?.value;
-    const password = document.getElementById("password")?.value;
+        function loginUser() {
+            const email = document.getElementById("email")?.value;
+            const password = document.getElementById("password")?.value;
 
-    if (email && password) {
-        alert("Login berhasil!");
-        // ✅ Atur status login di sini
-        localStorage.setItem("isLoggedIn", "true"); 
-        // Arahkan ke home.html
-        window.location.href = "home.html";
-    } else {
-        alert("Email dan password harus diisi!");
-    }
-}
+            if (email && password) {
+                alert("Login berhasil!");
+                // ✅ Atur status login di sini
+                localStorage.setItem("isLoggedIn", "true"); 
+                // Arahkan ke home.html
+                window.location.href = "home.html";
+            } else {
+                alert("Email dan password harus diisi!");
+            }
+        }
 
         // =======================
         // SIGNUP VALIDATION
