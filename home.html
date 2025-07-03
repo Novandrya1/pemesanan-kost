@@ -92,7 +92,6 @@
         .nota-actions { padding: 20px; }
 
         /* CSS Lainnya (Home, Detail, Profil, dll.) */
-        /* Kode CSS lainnya dari respons sebelumnya tetap ada di sini untuk kelengkapan */
         .hero-header { background: linear-gradient(to right, #3c312b, #3c312b); color: #fff; padding: 20px; padding-bottom: 80px; border-radius: 0 0 24px 24px; }
         .top-bar { display: flex; justify-content: space-between; align-items: center; position: relative; }
         .logo { font-size: 1.5rem; font-weight: 700; }
@@ -134,7 +133,7 @@
         .results-search-wrapper { position: relative; flex-grow: 1; }
         #results-search-input { width: 100%; padding: 8px 15px 8px 35px; border-radius: 20px; border: 1px solid var(--border-color); font-size: 0.9rem; background-color: var(--background-color); color: var(--text-dark); }
         .results-search-wrapper .icon { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--text-light); }
-        .results-list { padding: 20px; display: flex; flex-direction: column; gap: 15px; }
+        .results-list { padding: 0 20px 20px 20px; display: flex; flex-direction: column; gap: 15px; }
         .result-card { cursor: pointer; display: flex; gap: 15px; background-color: var(--card-bg-color); padding: 15px; border-radius: 12px; border: 1px solid var(--border-color); }
         .result-card img { width: 100px; height: 100px; border-radius: 8px; object-fit: cover; }
         .detail-image { width: 100%; height: 250px; object-fit: cover; }
@@ -195,7 +194,8 @@
         #chat-input { flex-grow: 1; padding: 10px 15px; border-radius: 20px; border: 1px solid var(--border-color); background-color: var(--background-color); color: var(--text-dark); }
         #send-chat-btn { background-color: var(--secondary-brand-color); color: #fff; border: none; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 1.2rem; flex-shrink: 0; }
         .profile-header { text-align: center; padding: 30px 20px; }
-        .profile-avatar { width: 90px; height: 90px; border-radius: 50%; object-fit: cover; margin-bottom: 15px; border: 3px solid var(--card-bg-color); box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        
+        .profile-avatar { width: 90px; height: 90px; border-radius: 50%; object-fit: cover; border: 3px solid var(--card-bg-color); box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
         .profile-name { font-size: 1.4rem; font-weight: 700; margin-bottom: 5px; }
         .profile-email { font-size: 1rem; color: var(--text-light); }
         .profile-menu { margin: 0 20px; background-color: var(--card-bg-color); border-radius: 12px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
@@ -218,6 +218,54 @@
         .nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; color: var(--text-light); text-decoration: none; font-size: 0.75rem; cursor: pointer; }
         .nav-item.active { color: var(--text-dark); font-weight: 600; }
         body.dark-mode .nav-item.active { color: var(--secondary-brand-color); }
+        
+        /* Gaya Tambahan untuk Fitur Baru */
+        .results-controls { display: flex; justify-content: space-between; align-items: center; padding: 10px 20px; }
+        #results-page .page-title { flex-grow: 0; padding: 0; margin: 0; font-size: 1.1rem; }
+        .sort-button { background-color: transparent; border: 1px solid var(--border-color); color: var(--text-dark); padding: 8px 12px; border-radius: 20px; cursor: pointer; display: flex; align-items: center; gap: 6px; font-size: 0.85rem; font-weight: 500; }
+        .sort-button img { width: 18px; height: 18px; }
+        
+        #map-view-container { position: relative; width: 100%; height: calc(100vh - 65px); background-color: #e0e0e0; }
+        #map-view-container > img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 1; }
+        .map-pin { position: absolute; z-index: 2; cursor: pointer; transform: translate(-50%, -100%); }
+        .map-pin img { width: 40px; height: 40px; }
+        .map-pin .pin-price { position: absolute; top: 5px; left: 50%; transform: translateX(-50%); background-color: rgba(0,0,0,0.75); color: #fff; padding: 2px 6px; border-radius: 8px; font-size: 0.7rem; font-weight: bold; white-space: nowrap; }
+
+        .profile-avatar-wrapper {
+            position: relative;
+            width: 90px;
+            height: 90px;
+            margin: 0 auto 15px auto;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        .profile-avatar-edit-overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(0,0,0,0.4);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .profile-avatar-wrapper:hover .profile-avatar-edit-overlay {
+            opacity: 1;
+        }
+        .profile-avatar-edit-overlay img {
+            width: 32px;
+            height: 32px;
+        }
+        #profile-avatar {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--card-bg-color);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
     </style>
 </head>
 <body>
@@ -235,7 +283,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h3 class="modal-title">Pilih Tanggal Check-in</h3>
-                 <button class="modal-close-btn">×</button>
+                <button class="modal-close-btn">×</button>
             </div>
             <div class="calendar">
                 <div class="calendar-header">
@@ -305,13 +353,31 @@
     <main id="results-page" class="hidden">
         <header class="page-header">
             <button class="back-button">←</button>
-            <h2 class="page-title" id="results-title"></h2>
             <div class="results-search-wrapper">
                 <span class="icon">🔍</span>
                 <input type="text" id="results-search-input" placeholder="Cari di hasil ini...">
             </div>
         </header>
-        <div class="results-list" id="results-list"></div>
+        <div class="page-container" style="padding-bottom: 20px;">
+            <div class="results-controls">
+                 <h2 class="page-title" id="results-title"></h2>
+                 <button id="sort-price-btn" class="sort-button">
+                    <img src="https://api.iconify.design/solar/sort-from-top-to-bottom-line-duotone.svg?color=%236b7388" alt="Sort">
+                    <span id="sort-btn-text">Harga Terendah</span>
+                </button>
+            </div>
+            <div class="results-list" id="results-list"></div>
+        </div>
+    </main>
+
+    <main id="map-page" class="hidden">
+        <header class="page-header">
+            <button class="back-button">←</button>
+            <h2 class="page-title">Peta Persebaran Kost</h2>
+        </header>
+        <div id="map-view-container">
+             <img src="https://media.wired.com/photos/59269cd37034dc5f91bec0f1/master/w_2560%2Cc_limit/GoogleMapTA.jpg" alt="Peta Gresik">
+             </div>
     </main>
 
     <main id="detail-page" class="hidden">
@@ -439,7 +505,12 @@
         <header class="page-header"><h2 class="page-title">Profil</h2></header>
         <div class="page-container">
             <div class="profile-header">
-                <img src="" alt="Avatar" class="profile-avatar" id="profile-avatar">
+                <div class="profile-avatar-wrapper" id="profile-avatar-wrapper">
+                    <img src="" alt="Avatar" id="profile-avatar">
+                    <div class="profile-avatar-edit-overlay">
+                        <img src="https://api.iconify.design/solar/camera-bold.svg?color=white" alt="Edit">
+                    </div>
+                </div>
                 <h3 class="profile-name" id="profile-name"></h3>
                 <p class="profile-email" id="profile-email"></p>
             </div>
@@ -460,7 +531,7 @@
                     <img src="https://api.iconify.design/solar/alt-arrow-right-linear.svg" class="icon" style="color:var(--text-light)">
                 </div>
                 <div class="profile-menu-item">
-                     <img src="https://api.iconify.design/solar/moon-bold-duotone.svg" class="icon" style="color:var(--text-light)">
+                    <img src="https://api.iconify.design/solar/moon-bold-duotone.svg" class="icon" style="color:var(--text-light)">
                     <span>Mode Gelap</span>
                     <label class="switch">
                         <input type="checkbox" id="dark-mode-toggle">
@@ -472,6 +543,7 @@
                 <button class="logout-button" id="logout-btn">Logout</button>
                 <button class="switch-account-button" id="switch-account-btn">Ganti Akun</button>
             </div>
+            <input type="file" id="avatar-upload-input" class="hidden" accept="image/*">
         </div>
     </main>
 
@@ -540,7 +612,7 @@
             </div>
              <div class="faq-item">
                 <h4 class="faq-question">Bagaimana cara mengubah profil saya?</h4>
-                <p class="faq-answer">Masuk ke tab "Profil", lalu pilih menu "Edit Profil". Setelah mengubah data, tekan tombol "Simpan Perubahan".</p>
+                <p class="faq-answer">Masuk ke tab "Profil", lalu pilih menu "Edit Profil". Anda juga bisa mengklik foto profil Anda untuk menggantinya.</p>
             </div>
         </div>
     </main>
@@ -572,26 +644,21 @@
         let pesananData = [
             { bookingId: 'BOOK-001', kostId: 1, checkIn: "01 Agu 2025", checkOut: "31 Agu 2025", status: "Lunas" },
             { bookingId: 'BOOK-002', kostId: 2, checkIn: "15 Jul 2025", checkOut: "14 Agu 2025", status: "Menunggu Pembayaran" },
-            { bookingId: 'BOOK-003', kostId: 3, checkIn: "05 Jul 2025", checkOut: "04 Agu 2025", status: "Lunas" },
-            { bookingId: 'BOOK-004', kostId: 1, checkIn: "01 Jun 2025", checkOut: "30 Jun 2025", status: "Lunas" },
-            { bookingId: 'BOOK-005', kostId: 2, checkIn: "15 Mei 2025", checkOut: "14 Jun 2025", status: "Menunggu Pembayaran" },
-            { bookingId: 'BOOK-006', kostId: 3, checkIn: "01 Mei 2025", checkOut: "31 Mei 2025", status: "Lunas" },
-            { bookingId: 'BOOK-007', kostId: 1, checkIn: "01 Apr 2025", checkOut: "30 Apr 2025", status: "Lunas" }
         ];
         let inboxData = [
-            { chatId: 1, contactName: "Bpk. Ahmad (Kost GKB)", avatar: "https://randomuser.me/api/portraits/men/32.jpg", timestamp: "10:45", unread: true, messages: [
+            { chatId: 3, contactName: "Admin KlikKost", avatar: "https://api.iconify.design/solar/user-check-bold-duotone.svg?color=%235392f9", timestamp: "Baru", unread: true, messages: [
+                { sender: 'contact', text: 'Selamat datang di KlikKost! Jika Anda butuh bantuan, jangan ragu untuk bertanya di sini.' },
+                { sender: 'contact', text: 'Terima kasih telah melakukan pembayaran Anda.' },
+            ]},
+            { chatId: 1, contactName: "Bpk. Ahmad (Kost GKB)", avatar: "https://randomuser.me/api/portraits/men/32.jpg", timestamp: "10:45", unread: false, messages: [
                 { sender: 'contact', text: 'Halo, ada yang bisa dibantu?' },
                 { sender: 'me', text: 'Halo Pak, mau tanya apakah parkir mobil aman?' },
                 { sender: 'contact', text: 'Aman sekali, kita ada CCTV dan security 24 jam.' },
-                { sender: 'contact', text: 'Baik, ditunggu kedatangannya.' },
             ]},
             { chatId: 2, contactName: "Ibu Sarah (Omah Manyar)", avatar: "https://randomuser.me/api/portraits/women/44.jpg", timestamp: "Kemarin", unread: false, messages: [
                 { sender: 'me', text: 'Bu, saya sudah transfer ya untuk booking bulan ini.' },
                 { sender: 'contact', text: 'Oke, sudah saya siapkan kamarnya.' },
             ]},
-            { chatId: 3, contactName: "Admin KlikKost", avatar: "https://api.iconify.design/solar/user-check-bold.svg", timestamp: "2 hari lalu", unread: false, messages: [
-                { sender: 'contact', text: 'Terima kasih atas pembayaran Anda.' },
-            ]}
         ];
         let userData = {
             name: "Budi Santoso",
@@ -614,6 +681,7 @@
             chatDetail: document.getElementById('chat-detail-page'),
             peraturan: document.getElementById('peraturan-page'),
             bantuan: document.getElementById('bantuan-page'),
+            map: document.getElementById('map-page'),
         };
         const bottomNav = document.getElementById('bottom-nav');
         const destinasiModal = document.getElementById('destinasi-modal');
@@ -626,6 +694,9 @@
         let selectedCheckinDateObj = new Date();
         let currentMonth = selectedCheckinDateObj.getMonth();
         let currentYear = selectedCheckinDateObj.getFullYear();
+        
+        let currentResultsData = [];
+        let currentSortOrder = 'asc'; // 'asc' for ascending, 'desc' for descending
 
         // --- NAVIGASI ---
         function navigateTo(pageName, isNavigatingBack = false) {
@@ -638,7 +709,7 @@
             window.scrollTo(0, 0);
             updateNav(pageName);
 
-            const specialPages = ['detail', 'booking', 'editProfil', 'chatDetail', 'peraturan', 'bantuan', 'nota'];
+            const specialPages = ['detail', 'booking', 'editProfil', 'chatDetail', 'peraturan', 'bantuan', 'nota', 'map'];
             if (specialPages.includes(pageName)) {
                 bottomNav.style.transform = 'translateY(100%)';
             } else {
@@ -671,7 +742,7 @@
         function renderInbox() {
             const container = document.getElementById('inbox-list-container');
             container.innerHTML = '';
-            inboxData.sort((a, b) => b.unread - a.unread);
+            inboxData.sort((a, b) => (b.unread - a.unread) || (new Date(b.timestamp) - new Date(a.timestamp)));
             inboxData.forEach(chat => {
                 const lastMessage = chat.messages[chat.messages.length - 1] || { text: 'Tidak ada pesan' };
                 const unreadClass = chat.unread ? 'unread' : '';
@@ -733,14 +804,13 @@
                 const statusClass = pesanan.status === 'Lunas' ? 'lunas' : 'menunggu';
                 let footerButtons = `<button class="delete-button" data-booking-id="${pesanan.bookingId}">Hapus</button>`;
                 if (pesanan.status === 'Menunggu Pembayaran') {
-                    footerButtons = `<button class="pay-button" data-booking-id="${pesanan.bookingId}">Bayar Sekarang</button>` + footerButtons;
+                    footerButtons = `<button class="pay-button" data-kost-id="${kost.id}">Bayar Sekarang</button>` + footerButtons;
                 }
                 
                 const cardElement = document.createElement('div');
                 cardElement.className = 'pesanan-card';
-                cardElement.dataset.id = kost.id;
                 cardElement.innerHTML = `
-                    <div class="pesanan-card-header">
+                    <div class="pesanan-card-header" data-id="${kost.id}">
                         <img src="${kost.gambar}" class="pesanan-card-img">
                         <div class="pesanan-card-info">
                             <h4>${kost.nama}</h4>
@@ -758,13 +828,26 @@
         
         function renderSearchResults(data) {
             const container = document.getElementById('results-list');
-            container.innerHTML = data.map(k => `<div class="result-card" data-id="${k.id}"><img src="${k.gambar}"><div class="result-info"><h3>${k.nama}</h3><p>${k.alamat}</p></div></div>`).join('');
+            container.innerHTML = '';
+            if (data.length === 0) {
+                container.innerHTML = `<p style="text-align:center; color: var(--text-light); padding: 20px;">Tidak ada hasil yang cocok.</p>`;
+                return;
+            }
+            container.innerHTML = data.map(k => `
+                <div class="result-card" data-id="${k.id}">
+                    <img src="${k.gambar}">
+                    <div class="result-info">
+                        <h3 style="margin-bottom: 5px;">${k.nama}</h3>
+                        <p style="color: var(--text-light); font-size: 0.9rem;">${k.alamat}</p>
+                        <strong style="display: block; margin-top: 10px; font-size: 1.1rem; color: var(--secondary-brand-color);">${formatHarga(k.hargaDiskon)}</strong>
+                    </div>
+                </div>`).join('');
         }
 
         function renderRekomendasi() { 
             const container = document.getElementById('rekomendasi-list');
             if(container) {
-                container.innerHTML = kostData.map(k => `<div class="kost-card" data-id="${k.id}"><img src="${k.gambar}" class="kost-card-image"><div class="kost-card-content"><h3 class="kost-card-title">${k.nama}</h3></div></div>`).join('');
+                container.innerHTML = kostData.map(k => `<div class="kost-card" data-id="${k.id}"><img src="${k.gambar}" class="kost-card-image"><div class="kost-card-content"><h3 class="kost-card-title">${k.nama}</h3><p style="color:var(--text-light); margin-top:5px;">${formatHarga(k.hargaDiskon)}</p></div></div>`).join('');
             }
         }
         function renderAds() {
@@ -787,7 +870,7 @@
             document.getElementById('detail-deskripsi').textContent = kost.deskripsi;
             document.getElementById('detail-price').textContent = formatHarga(kost.hargaDiskon);
             document.getElementById('detail-fasilitas').innerHTML = kost.fasilitas.map(f => `<div class="fasilitas-item"><span>${f}</span></div>`).join('');
-            document.getElementById('detail-map').src = `https://maps.google.com/maps?q=${kost.lat},${kost.lng}&hl=es;z=14&output=embed`;
+            document.getElementById('detail-map').src = `https://maps.google.com/maps?q=${kost.lat},${kost.lng}&hl=id&z=15&output=embed`;
         }
         
         function renderDestinasiModal() {
@@ -857,6 +940,39 @@
             document.getElementById('nota-checkin').textContent = selectedCheckinDateObj.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
             document.getElementById('nota-metode-bayar').textContent = selectedPaymentMethod || 'Belum dipilih';
         }
+
+        function renderMapPage() {
+            const container = document.getElementById('map-view-container');
+            // Clear previous pins, but keep the background map image
+            container.querySelectorAll('.map-pin').forEach(pin => pin.remove());
+
+            const lats = kostData.map(k => k.lat);
+            const lngs = kostData.map(k => k.lng);
+            const minLat = Math.min(...lats);
+            const maxLat = Math.max(...lats);
+            const minLng = Math.min(...lngs);
+            const maxLng = Math.max(...lngs);
+
+            const latRange = maxLat - minLat || 1;
+            const lngRange = maxLng - minLng || 1;
+
+            kostData.forEach(kost => {
+                const topPercent = ((maxLat - kost.lat) / latRange) * 100;
+                const leftPercent = ((kost.lng - minLng) / lngRange) * 100;
+
+                const pin = document.createElement('div');
+                pin.className = 'map-pin';
+                pin.dataset.id = kost.id;
+                // Add some padding so pins aren't on the absolute edge
+                pin.style.top = `calc(${Math.max(10, Math.min(90, topPercent))}% - 10px)`;
+                pin.style.left = `calc(${Math.max(10, Math.min(90, leftPercent))}% - 5px)`;
+                pin.innerHTML = `
+                    <img src="https://api.iconify.design/solar/map-point-wave-bold.svg?color=%23ff567d" alt="Pin">
+                    <div class="pin-price">${formatHarga(kost.hargaDiskon / 1000)}k</div>
+                `;
+                container.appendChild(pin);
+            });
+        }
         
         // --- DARK MODE ---
         const darkModeToggle = document.getElementById('dark-mode-toggle');
@@ -874,7 +990,6 @@
             const target = e.target;
             const closest = (selector) => target.closest(selector);
             const targetId = target.id;
-            const closestMenuItem = closest('.profile-menu-item');
             
             if (closest('.back-button')) { navigateBack(); return; }
             if (closest('.notification-icon')) {
@@ -884,6 +999,7 @@
             }
 
             // Aksi pada menu profil
+            const closestMenuItem = closest('.profile-menu-item');
             if (closestMenuItem) {
                 const menuItemId = closestMenuItem.id;
                 if (menuItemId === 'edit-profile-btn') { renderEditProfile(); navigateTo('editProfil'); return; }
@@ -891,32 +1007,19 @@
                 if (menuItemId === 'bantuan-btn') { navigateTo('bantuan'); return; }
             }
 
+            // Aksi tombol-tombol spesifik
             const actionMap = {
                 'bayar-button': () => {
-                    if (!selectedPaymentMethod) {
-                        alert('Silakan pilih metode pembayaran terlebih dahulu.');
-                        return;
-                    }
-                    renderNota();
-                    navigateTo('nota');
+                    if (!selectedPaymentMethod) { alert('Silakan pilih metode pembayaran terlebih dahulu.'); return; }
+                    renderNota(); navigateTo('nota');
                 },
-                 'home-from-nota-btn': () => {
-                    pageHistory = ['home']; // Reset history
-                    navigateTo('home');
-                },
+                'home-from-nota-btn': () => { pageHistory = ['home']; navigateTo('home'); },
                 'save-profile-btn': () => {
                     userData.name = document.getElementById('edit-name').value;
                     userData.email = document.getElementById('edit-email').value;
-                    renderProfile();
-                    alert('Profil berhasil diperbarui!');
-                    navigateBack();
+                    renderProfile(); alert('Profil berhasil diperbarui!'); navigateBack();
                 },
-                'logout-btn': () => {
-                    if (confirm('Apakah Anda yakin ingin logout?')) {
-                        alert('Anda telah logout.');
-                        navigateTo('home');
-                    }
-                },
+                'logout-btn': () => { if (confirm('Apakah Anda yakin ingin logout?')) { alert('Anda telah logout.'); navigateTo('home'); } },
                 'switch-account-btn': () => alert('Membuka halaman Ganti Akun...'),
                 'send-chat-btn': () => {
                     const input = document.getElementById('chat-input');
@@ -925,68 +1028,94 @@
                         const chat = inboxData.find(c => c.chatId === currentChatId);
                         chat.messages.push({ sender: 'me', text: messageText });
                         chat.timestamp = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
-                        renderChatDetail(currentChatId);
-                        input.value = '';
+                        renderChatDetail(currentChatId); input.value = '';
                         setTimeout(() => {
                             chat.messages.push({ sender: 'contact', text: 'Siap, terima kasih infonya.' });
                             renderChatDetail(currentChatId);
                         }, 1200);
                     }
                 },
-                 'pesan-button': () => {
-                    const detailTitle = document.getElementById('detail-title').textContent;
-                    const kost = kostData.find(k => k.nama === detailTitle);
+                'pesan-button': () => {
+                    const kost = kostData.find(k => k.nama === document.getElementById('detail-title').textContent);
                     if(kost) currentBookingKostId = kost.id;
                     navigateTo('booking');
+                },
+                'sort-price-btn': () => {
+                    const btnText = document.getElementById('sort-btn-text');
+                    if(currentSortOrder === 'asc'){
+                        currentResultsData.sort((a, b) => a.hargaDiskon - b.hargaDiskon);
+                        currentSortOrder = 'desc';
+                        btnText.textContent = 'Harga Tertinggi';
+                    } else {
+                        currentResultsData.sort((a, b) => b.hargaDiskon - a.hargaDiskon);
+                        currentSortOrder = 'asc';
+                        btnText.textContent = 'Harga Terendah';
+                    }
+                    renderSearchResults(currentResultsData);
                 }
             };
-            if (actionMap[targetId]) { actionMap[targetId](); return; }
+            if (actionMap[targetId] || actionMap[closest('button')?.id]) {
+                 (actionMap[targetId] || actionMap[closest('button').id])();
+                 return;
+            }
 
-            if (target.classList.contains('delete-button')) { 
-                const bookingId = target.dataset.bookingId;
+            if (closest('.delete-button')) { 
+                const bookingId = closest('.delete-button').dataset.bookingId;
                 if(confirm("Apakah Anda yakin ingin menghapus pesanan ini?")) {
                     pesananData = pesananData.filter(p => p.bookingId !== bookingId);
                     renderPesanan();
                 }
-            }
-            else if (target.classList.contains('pay-button')) { navigateTo('booking'); }
-            else if (closest('.chat-item')) {
+            } else if (closest('.pay-button')) {
+                const kostId = parseInt(closest('.pay-button').dataset.kostId);
+                currentBookingKostId = kostId;
+                navigateTo('booking');
+            } else if (closest('.chat-item')) {
                 const chatId = parseInt(closest('.chat-item').dataset.chatId);
                 const chat = inboxData.find(c => c.chatId === chatId);
                 if(chat) chat.unread = false;
-                renderChatDetail(chatId);
-                navigateTo('chatDetail');
-            }
-            else if (closest('.kost-card') || closest('.result-card') || closest('.pesanan-card-header')) {
+                renderChatDetail(chatId); navigateTo('chatDetail');
+            } else if (closest('.kost-card') || closest('.result-card') || closest('.pesanan-card-header')) {
                 const card = closest('.kost-card, .result-card, .pesanan-card-header');
                 const kostId = parseInt(card.dataset.id);
                 const data = kostData.find(k => k.id === kostId);
-                if (data) {
-                    renderDetailPage(data);
-                    navigateTo('detail');
-                }
-            }
-            else if (closest('.menu-item') || closest('.search-button')) {
+                if (data) { renderDetailPage(data); navigateTo('detail'); }
+            } else if (closest('.menu-item') || closest('.search-button')) {
                 if (closest('.search-button') && (!selectedDestination || !selectedCheckinDateObj)) {
-                    alert('Silakan pilih destinasi dan tanggal check-in terlebih dahulu.');
-                    return;
+                    alert('Silakan pilih destinasi dan tanggal check-in terlebih dahulu.'); return;
                 }
                 const filter = closest('.menu-item, .search-button').dataset.filter || "Semua";
                 let data, title = "Hasil Pencarian";
-                if (filter === "Peta") { alert("Membuka Peta..."); return; }
+                const isQuickFilter = closest('.menu-item');
+                
+                if (filter === "Peta") { renderMapPage(); navigateTo('map'); return; }
                 if (filter === "Putra") { data = kostData.filter(k => k.tipe === "Putra" || k.tipe === "Campur"); title = "Pilihan Kost Putra"; }
                 else if (filter === "Putri") { data = kostData.filter(k => k.tipe === "Putri" || k.tipe === "Campur"); title = "Pilihan Kost Putri"; }
                 else if (filter === "AC") { data = kostData.filter(k => k.fasilitas.includes("AC")); title = "Pilihan Kost AC"; }
-                else { data = kostData; }
+                else { data = [...kostData]; }
+
+                currentSortOrder = 'asc';
+                document.getElementById('sort-btn-text').textContent = 'Harga Terendah';
+
+                // Pre-sort for quick filters
+                if(isQuickFilter){
+                    data.sort((a,b) => a.hargaDiskon - b.hargaDiskon);
+                    currentSortOrder = 'desc';
+                    document.getElementById('sort-btn-text').textContent = 'Harga Tertinggi';
+                }
+
+                currentResultsData = data;
                 document.getElementById('results-title').textContent = title;
-                renderSearchResults(data);
+                renderSearchResults(currentResultsData);
                 navigateTo('results');
-            }
-            else if (closest('.payment-method')) {
+            } else if (closest('.payment-method')) {
                 document.querySelectorAll('.payment-method').forEach(p => p.classList.remove('selected'));
                 const paymentMethodDiv = closest('.payment-method');
                 paymentMethodDiv.classList.add('selected');
                 selectedPaymentMethod = paymentMethodDiv.dataset.metode;
+            } else if (closest('.map-pin')) {
+                const kostId = parseInt(closest('.map-pin').dataset.id);
+                const data = kostData.find(k => k.id === kostId);
+                if (data) { renderDetailPage(data); navigateTo('detail'); }
             }
         });
         
@@ -1005,28 +1134,41 @@
 
         // Listener untuk Panel Pencarian Interaktif
         document.getElementById('destinasi-field').addEventListener('click', () => {
-            renderDestinasiModal();
-            destinasiModal.classList.remove('hidden');
+            renderDestinasiModal(); destinasiModal.classList.remove('hidden');
         });
         document.querySelector('#destinasi-modal .modal-close-btn').addEventListener('click', () => {
             destinasiModal.classList.add('hidden');
         });
         document.getElementById('checkin-field').addEventListener('click', () => {
-            renderCalendar(currentMonth, currentYear);
-            calendarModal.classList.remove('hidden');
+            renderCalendar(currentMonth, currentYear); calendarModal.classList.remove('hidden');
         });
         document.querySelector('#calendar-modal .modal-close-btn').addEventListener('click', () => {
             calendarModal.classList.add('hidden');
         });
         document.getElementById('prev-month-btn').addEventListener('click', () => {
-            currentMonth--;
-            if (currentMonth < 0) { currentMonth = 11; currentYear--; }
+            currentMonth--; if (currentMonth < 0) { currentMonth = 11; currentYear--; }
             renderCalendar(currentMonth, currentYear);
         });
         document.getElementById('next-month-btn').addEventListener('click', () => {
-            currentMonth++;
-            if (currentMonth > 11) { currentMonth = 0; currentYear++; }
+            currentMonth++; if (currentMonth > 11) { currentMonth = 0; currentYear++; }
             renderCalendar(currentMonth, currentYear);
+        });
+
+        // Listener Ganti Foto Profil
+        const avatarUploadInput = document.getElementById('avatar-upload-input');
+        document.getElementById('profile-avatar-wrapper').addEventListener('click', () => {
+            avatarUploadInput.click();
+        });
+        avatarUploadInput.addEventListener('change', (event) => {
+            if (event.target.files && event.target.files[0]) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const newAvatarSrc = e.target.result;
+                    document.getElementById('profile-avatar').src = newAvatarSrc;
+                    userData.avatar = newAvatarSrc; // Simpan ke data model
+                };
+                reader.readAsDataURL(event.target.files[0]);
+            }
         });
         
         // --- NAVIGASI BAWAH ---
@@ -1038,6 +1180,7 @@
                     if (pageName === 'pesanan') renderPesanan();
                     else if (pageName === 'inbox') renderInbox();
                     else if (pageName === 'profil') renderProfile();
+                    pageHistory = [pageName]; // Reset history when using bottom nav
                     navigateTo(pageName);
                 }
             }
@@ -1047,18 +1190,21 @@
             document.querySelectorAll('.nav-item').forEach(item => {
                 const page = item.dataset.page;
                 const icon = item.querySelector('img');
-                const iconName = icon.src.split('/').pop().split('?')[0];
-                let newIconName = iconName.replace('-bold', '-outline').replace('-smile-bold', '-smile-outline');
+                const iconUrl = new URL(icon.src);
+                const iconName = iconUrl.pathname.split('/').pop();
+                let newIconName = iconName.replace('-bold.svg', '-outline.svg').replace('-smile-outline.svg', '-smile-bold.svg');
                 
                 item.classList.remove('active');
+                iconUrl.searchParams.set('color', '#6b7388');
+                
                 if (page === activePage) {
                     item.classList.add('active');
-                    newIconName = newIconName.replace('-outline', '-bold');
-                    if (page === 'home') newIconName = 'home-smile-bold.svg';
-                    icon.src = `https://api.iconify.design/solar/${newIconName}?color=%235392f9`;
-                } else {
-                    icon.src = `https://api.iconify.design/solar/${newIconName}?color=%236b7388`;
+                    newIconName = newIconName.replace('-outline.svg', '-bold.svg');
+                    iconUrl.searchParams.set('color', document.body.classList.contains('dark-mode') ? '#ff567d' : '#3c312b');
                 }
+                
+                iconUrl.pathname = iconUrl.pathname.replace(iconName, newIconName);
+                icon.src = iconUrl.toString();
             });
         }
         
@@ -1066,6 +1212,7 @@
         renderAds();
         renderNotifications();
         renderRekomendasi();
+        renderProfile(); // Panggil ini untuk set foto profil awal
         const checkinDateEl = document.getElementById('checkin-date');
         if (checkinDateEl) {
              checkinDateEl.textContent = selectedCheckinDateObj.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });

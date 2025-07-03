@@ -20,6 +20,15 @@
             overflow-x: hidden;
         }
 
+        /* === PEMBUNGKUS KONTEN FORM === */
+        .form-wrapper {
+            width: 100%;
+            max-width: 400px; /* Batas lebar maksimal untuk form */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
         /* Animasi untuk transisi antar form */
         .fade-slide {
             animation: fadeSlide 0.5s ease forwards;
@@ -82,13 +91,14 @@
             border-color: #7c5c48;
         }
 
-        /* === LOGIN CONTAINER === */
+        /* === LOGIN & SIGNUP CONTAINER (Mobile First) === */
         .login-container,
         .signup-container {
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
+            width: 100%;
             min-height: 100%;
             padding: 32px 24px;
             background-color: #fff;
@@ -99,13 +109,13 @@
             display: none; /* Disembunyikan pertama kali */
         }
 
-        .login-img {
-            width: 200px;
+        .login-img, .signup-img {
+            width: clamp(180px, 30vw, 220px); /* Ukuran gambar responsif */
             margin-bottom: 24px;
         }
 
-        .login-title {
-            font-size: 22px;
+        .login-title, .signup-title {
+            font-size: clamp(22px, 5vw, 28px); /* Ukuran judul responsif */
             font-weight: 600;
             margin-bottom: 24px;
             color: #333;
@@ -139,13 +149,8 @@
             background-color: #ddd;
         }
 
-        .divider::before {
-            left: 0;
-        }
-
-        .divider::after {
-            right: 0;
-        }
+        .divider::before { left: 0; }
+        .divider::after { right: 0; }
         
         .btn-google {
             display: flex;
@@ -167,30 +172,18 @@
             height: 20px;
         }
 
-        .register-link {
+        .register-link, .login-link {
             font-size: 13px;
             color: #666;
             margin-top: 24px;
         }
 
-        .register-link a {
+        .register-link a, .login-link a {
             color: #3b82f6;
             text-decoration: none;
             font-weight: 500;
         }
         
-        /* === SIGN UP CONTAINER === */
-        .signup-img {
-            width: 200px;
-            margin-bottom: 20px;
-        }
-
-        .signup-title {
-            font-size: 24px;
-            font-weight: 600;
-            margin-bottom: 20px;
-        }
-
         #togglePassword {
             position: absolute;
             right: 12px;
@@ -215,107 +208,81 @@
             margin-top: 20px;
             margin-bottom: 20px;
         }
-        
-        .login-link {
-             font-size: 13px;
-             color: #666;
-        }
-
-        .login-link a {
-            color: #3b82f6;
-            text-decoration: none;
-            font-weight: 500;
-        }
-
-        /* === ATURAN RESPONSIVE UNTUK LAYAR LEBAR (TABLET & DESKTOP) === */
-        @media (min-width: 768px) {
-            body {
-                background-color: #f0f2f5; /* Latar belakang abu-abu agar kartu menonjol */
-                display: flex;
-                align-items: center;
-                justify-content: center;
-            }
-
-            .login-container, .signup-container {
-                max-width: 420px; /* Batasi lebar form di layar besar */
-                min-height: auto;
-                height: auto;
-                border-radius: 16px;
-                box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-                padding: 40px; /* Beri padding lebih di desktop */
-            }
-        }
     </style>
 </head>
 <body>
     <div class="login-container">
-        <img src="/gambar/gambar onb 3.png" alt="Ilustrasi Sign Up" class="signup-img" />
+        <div class="form-wrapper">
+            <img src="/gambar/gambar onb 3.png" alt="Ilustrasi Login" class="login-img" />
 
-        <h2 class="login-title">Selamat Datang Kembali</h2>
+            <h2 class="login-title">Selamat Datang Kembali</h2>
 
-        <div class="form-group">
-            <label for="email">Email</label>
-            <input type="email" id="email" placeholder="contoh@email.com" required />
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" placeholder="contoh@email.com" required />
+            </div>
+
+            <div class="form-group">
+                <label for="password">Kata Sandi</label>
+                <input type="password" id="password" placeholder="••••••••" required />
+                <a href="#" class="forgot-link">Lupa password?</a>
+            </div>
+
+            <button class="btn-primary" onclick="loginUser()">Masuk</button>
+
+            <div class="divider"><span>atau</span></div>
+
+            <button class="btn-google">
+                <img src="/gambar/google.png" alt="Google" />
+                Masuk dengan Google
+            </button>
+
+            <p class="register-link">
+                Belum punya akun?
+                <a href="#" id="show-signup">Daftar sekarang</a>
+            </p>
         </div>
-
-        <div class="form-group">
-            <label for="password">Kata Sandi</label>
-            <input type="password" id="password" placeholder="••••••••" required />
-            <a href="#" class="forgot-link">Lupa password?</a>
-        </div>
-
-        <button class="btn-primary" onclick="loginUser()">Masuk</button>
-
-        <div class="divider"><span>atau</span></div>
-
-        <button class="btn-google">
-            <img src="/gambar/google.png" alt="Google" />
-            Masuk dengan Google
-        </button>
-
-        <p class="register-link">
-            Belum punya akun?
-            <a href="#" id="show-signup">Daftar sekarang</a>
-        </p>
     </div>
 
     <div class="signup-container">
-        <img src="/gambar/gambar onb 4.png" alt="Ilustrasi Sign Up" class="signup-img" />
+        <div class="form-wrapper">
+            <img src="/gambar/gambar onb 4.png" alt="Ilustrasi Sign Up" class="signup-img" />
 
-        <h2 class="signup-title">Buat Akun Baru</h2>
+            <h2 class="signup-title">Buat Akun Baru</h2>
 
-        <div class="form-group">
-            <label for="name">Nama</label>
-            <input type="text" id="name" placeholder="Nama lengkap Anda" required />
+            <div class="form-group">
+                <label for="name">Nama</label>
+                <input type="text" id="name" placeholder="Nama lengkap Anda" required />
+            </div>
+
+            <div class="form-group">
+                <label for="phone">Nomor Telepon</label>
+                <input type="tel" id="phone" placeholder="Contoh: 8123456789" required />
+            </div>
+
+            <div class="form-group">
+                <label for="signup-email-field">Email</label>
+                <input type="email" id="signup-email-field" placeholder="Alamat email Anda" required />
+            </div>
+
+            <div class="form-group" style="position: relative;">
+                <label for="signup-password">Password</label>
+                <input type="password" id="signup-password" placeholder="Minimal 8 karakter" required />
+                <span id="togglePassword">👁️</span>
+            </div>
+
+            <p class="agreement">
+                Dengan mendaftar, Anda menyetujui
+                <a href="#">Syarat & Ketentuan</a> dan
+                <a href="#">Kebijakan Privasi</a> Kami.
+            </p>
+
+            <button class="btn-primary" onclick="signupUser()">Daftar</button>
+
+            <p class="login-link">
+                Sudah punya akun? <a href="#" id="show-login">Masuk</a>
+            </p>
         </div>
-
-        <div class="form-group">
-            <label for="phone">Nomor Telepon</label>
-            <input type="tel" id="phone" placeholder="Contoh: 8123456789" required />
-        </div>
-
-        <div class="form-group">
-            <label for="signup-email-field">Email</label>
-            <input type="email" id="signup-email-field" placeholder="Alamat email Anda" required />
-        </div>
-
-        <div class="form-group" style="position: relative;">
-            <label for="signup-password">Password</label>
-            <input type="password" id="signup-password" placeholder="Minimal 8 karakter" required />
-            <span id="togglePassword">👁️</span>
-        </div>
-
-        <p class="agreement">
-            Dengan mendaftar, Anda menyetujui
-            <a href="#">Syarat & Ketentuan</a> dan
-            <a href="#">Kebijakan Privasi</a> Kami.
-        </p>
-
-        <button class="btn-primary" onclick="signupUser()">Daftar</button>
-
-        <p class="login-link">
-            Sudah punya akun? <a href="#" id="show-login">Masuk</a>
-        </p>
     </div>
 
     <script>
@@ -353,7 +320,6 @@
             togglePassword.addEventListener("click", () => {
                 const type = passwordInput.getAttribute("type") === "password" ? "text" : "password";
                 passwordInput.setAttribute("type", type);
-                // Ganti ikon mata jika perlu
                 togglePassword.textContent = type === "password" ? "👁️" : "🙈";
             });
         }
@@ -367,10 +333,8 @@
 
             if (email && password) {
                 alert("Login berhasil!");
-                // ✅ Atur status login di sini
                 localStorage.setItem("isLoggedIn", "true"); 
-                // Arahkan ke home.html
-                window.location.href = "home.html";
+                window.location.href = "home.html"; // Ganti dengan halaman utama aplikasi Anda
             } else {
                 alert("Email dan password harus diisi!");
             }
@@ -386,9 +350,7 @@
             const password = document.getElementById("signup-password")?.value;
 
             if (name && phone && email && password) {
-                 // Simulasi signup berhasil
                 alert("Pendaftaran berhasil! Silakan login.");
-                // Arahkan kembali ke halaman login
                 showLogin.click();
             } else {
                 alert("Lengkapi semua data terlebih dahulu!");
