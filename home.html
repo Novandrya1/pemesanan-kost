@@ -341,8 +341,8 @@
                 <div class="menu-item" data-filter="Peta"><div class="menu-item-icon"><img src="https://api.iconify.design/solar/map-bold.svg?color=%235392f9"></div><span>Lihat Peta</span></div>
             </section>
              <div class="ads-slider-wrapper">
-                <div class="ads-slider-track" id="ads-track"></div>
-            </div>
+                 <div class="ads-slider-track" id="ads-track"></div>
+             </div>
             <section class="content-section" style="margin-top:20px;">
                 <h2 class="section-title">Penawaran Populer</h2>
                 <div class="kost-slider" id="rekomendasi-list"></div>
@@ -362,9 +362,9 @@
             <div class="results-controls">
                  <h2 class="page-title" id="results-title"></h2>
                  <button id="sort-price-btn" class="sort-button">
-                    <img src="https://api.iconify.design/solar/sort-from-top-to-bottom-line-duotone.svg?color=%236b7388" alt="Sort">
-                    <span id="sort-btn-text">Harga Terendah</span>
-                </button>
+                     <img src="https://api.iconify.design/solar/sort-from-top-to-bottom-line-duotone.svg?color=%236b7388" alt="Sort">
+                     <span id="sort-btn-text">Harga Terendah</span>
+                 </button>
             </div>
             <div class="results-list" id="results-list"></div>
         </div>
@@ -854,6 +854,7 @@
             const container = document.getElementById('ads-track');
             if (container) {
                 const adContent = adsData.map(ad => `<div class="ad-card ${ad.class}"><h3 class="ad-title">${ad.title}</h3><p class="ad-content">${ad.content}</p><button class="ad-button">${ad.button}</button></div>`).join('');
+                // Duplicate ads for seamless loop
                 container.innerHTML = adContent + adContent;
             }
         }
@@ -1208,11 +1209,40 @@
             });
         }
         
+        // --- LOGIC FOR AUTOMATIC ADS SLIDER ---
+        function startAdsSlider() {
+            const track = document.getElementById('ads-track');
+            if (!track) return;
+            
+            let currentAdIndex = 0;
+            const adCount = adsData.length;
+            const slideInterval = 4000; // 4 seconds
+
+            // Set up the interval for automatic sliding
+            let sliderInterval = setInterval(() => {
+                currentAdIndex++;
+                track.style.transition = 'transform 0.7s ease-in-out';
+                track.style.transform = `translateX(-${currentAdIndex * 100}%)`;
+            }, slideInterval);
+
+            // Listen for the end of a transition to handle the infinite loop
+            track.addEventListener('transitionend', () => {
+                // If we have reached the first of the cloned slides
+                if (currentAdIndex >= adCount) {
+                    // Jump back to the beginning without animation
+                    track.style.transition = 'none';
+                    currentAdIndex = 0;
+                    track.style.transform = `translateX(0)`;
+                }
+            });
+        }
+        
         // --- INISIALISASI ---
         renderAds();
         renderNotifications();
         renderRekomendasi();
         renderProfile(); // Panggil ini untuk set foto profil awal
+        startAdsSlider(); // Start the automatic ad slider
         const checkinDateEl = document.getElementById('checkin-date');
         if (checkinDateEl) {
              checkinDateEl.textContent = selectedCheckinDateObj.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
